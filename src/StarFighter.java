@@ -7,27 +7,24 @@
 import javax.swing.JFrame;
 import java.awt.Component;
 
-public class StarFighter extends JFrame
-{
-	private static final int WIDTH = 800;
-	private static final int HEIGHT = 600;
+public class StarFighter extends JFrame {
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
 
-	public StarFighter()
-	{
-		super("STARFIGHTER");
-		setSize(WIDTH,HEIGHT);
+    public StarFighter() {
+        super("STARFIGHTER");
+        setSize(WIDTH,HEIGHT);
 
-		OuterSpace theGame = new OuterSpace();
-		((Component)theGame).setFocusable(true);
+        OuterSpace theGame = new OuterSpace();
+        ((Component)theGame).setFocusable(true);
 
-		getContentPane().add(theGame);
+        getContentPane().add(theGame);
 
-                setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setVisible(true);
-	}
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setVisible(true);
+    }
 
-	public static void main( String args[] )
-	{
-		StarFighter run = new StarFighter();
-	}
+    public static void main( String args[] ) {
+        StarFighter run = new StarFighter();
+    }
 }
