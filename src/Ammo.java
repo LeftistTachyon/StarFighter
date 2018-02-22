@@ -6,52 +6,52 @@
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.io.File;
-import javax.imageio.ImageIO;
 
-public class Ammo extends MovingThing
-{
-	private int speed;
+public class Ammo extends MovingThing {
+    private int speed;
 
-	public Ammo()
-	{
-		this(0,0,0);
-	}
+    public Ammo() {
+        this(0, 0, 1);
+    }
 
-	public Ammo(int x, int y)
-	{
-		//add code
-	}
+    public Ammo(int x, int y) {
+        //add code
+        this(x, y, 1);
+    }
 
-	public Ammo(int x, int y, int s)
-	{
-		//add code
-	}
+    public Ammo(int x, int y, int s) {
+        //add code
+        super(x - 2, y, 4, 10);
+        speed = s;
+    }
 
-	public void setSpeed(int s)
-	{
-	   //add code
-	}
+    @Override
+    public void setSpeed(int s) {
+       //add code
+       speed = s;
+    }
 
-	public int getSpeed()
-	{
-	   return 0;
-	}
+    @Override
+    public int getSpeed() {
+       return speed;
+    }
 
-	public void draw( Graphics window )
-	{
-		//add code to draw the ammo
-	}
-	
-	
-	public void move( String direction )
-	{
-		//add code to draw the ammo
-	}
+    @Override
+    public void draw( Graphics g ) {
+        //add code to draw the ammo
+        g.setColor(Color.RED);
+        g.fillRect(xPos, yPos, 4, 10);
+    }
 
-	public String toString()
-	{
-		return "";
-	}
+    @Override
+    public void move( String direction ) {
+        //add code to move the ammo
+        yPos -= speed;
+        resetHitBox();
+    }
+
+    @Override
+    public String toString() {
+        return "Shot at (" + xPos + ", " + yPos + ")";
+    }
 }

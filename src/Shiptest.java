@@ -1,12 +1,12 @@
+
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
+
 // A+ Computer Science  -  www.apluscompsci.com
 //Name -
 //Date -
 //Class -
 //Lab  - 
-
-import java.io.*;
-import java.util.*;
-import static java.lang.System.*;
 
 public class Shiptest
 {
@@ -22,5 +22,9 @@ public class Shiptest
         test3.setX(3);
         test3.setY(5);
         System.out.println("Ship 3 " + test3);
+        
+        Rectangle2D rect1 = new Rectangle2D.Double(0, 0, 10, 10);
+        Rectangle2D rect2 = new Rectangle2D.Double(5, 5, 10, 10);
+        System.out.println(new Area(rect1).intersects(rect2));
     }
 }

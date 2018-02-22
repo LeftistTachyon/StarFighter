@@ -4,46 +4,52 @@
 //Class -
 //Lab  -
 
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.io.File;
-import javax.imageio.ImageIO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bullets
-{
-	private List<Ammo> ammo;
+public class Bullets {
+    private List<Ammo> ammo;
 
-	public Bullets()
-	{
-	}
+    public Bullets() {
+        ammo = new ArrayList<>();
+    }
 
-	public void add(Ammo al)
-	{
-	}
+    public void add(Ammo al) {
+        ammo.add(al);
+    }
 
-	//post - draw each Ammo
-	public void drawEmAll( Graphics window )
-	{
-	}
+    //post - draw each Ammo
+    public void drawEmAll( Graphics g ) {
+        for(Ammo a:ammo) {
+            a.draw(g);
+        }
+    }
 
-	public void moveEmAll()
-	{
-	}
+    public void moveEmAll() {
+        for(Ammo a : ammo) {
+            a.move(null);
+        }
+    }
 
-	public void cleanEmUp()
-	{
-	}
+    public void cleanEmUp() {
+        for(int i = ammo.size()-1;i>=0;i--) {
+            if(ammo.get(i).getY() <= -10) {
+                ammo.remove(i);
+            }
+        }
+    }
 
-	public List<Ammo> getList()
-	{
-		return null;
-	}
+    public List<Ammo> getList() {
+        return ammo;
+    }
 
-	public String toString()
-	{
-		return "";
-	}
+    public void removeAll(List<Ammo> a) {
+        ammo.removeAll(a);
+    }
+
+    @Override
+    public String toString() {
+        return ammo.toString();
+    }
 }

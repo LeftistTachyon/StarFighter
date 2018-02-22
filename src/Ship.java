@@ -5,30 +5,24 @@
 //Lab  -
 
 import java.io.File;
-import java.net.URL;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import javax.imageio.ImageIO;
 
-public class Ship extends MovingThing
-{
+public class Ship extends MovingThing {
     protected int speed;
     private Image image;
 
-    public Ship()
-    {
+    public Ship() {
         this(10,10,10,10,10);
     }
 
-    public Ship(int x, int y)
-    {
+    public Ship(int x, int y) {
        //add code here
         this(x, y, 10, 10, 10);
     }
 
-    public Ship(int x, int y, int s)
-    {
+    public Ship(int x, int y, int s) {
        //add code here
         this(s, y, 10, 10, s);
     }
@@ -46,21 +40,18 @@ public class Ship extends MovingThing
 
 
     @Override
-    public void setSpeed(int s)
-    {
+    public void setSpeed(int s) {
        //add more code
         speed = s;
     }
 
     @Override
-    public int getSpeed()
-    {
+    public int getSpeed() {
        return speed;
     }
 
     @Override
-    public void move(String direction)
-    {
+    public void move(String direction) {
         //add code here
         switch(direction) {
             case "LEFT":
@@ -76,17 +67,21 @@ public class Ship extends MovingThing
                 xPos += speed;
                 break;
         }
+        resetHitBox();
+    }
+    
+    public Ammo shoot() {
+        int middleX = xPos + (width / 2);
+        return new Ammo(middleX, yPos, 3);
     }
 
     @Override
-    public void draw( Graphics window )
-    {
+    public void draw( Graphics window ) {
         window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return super.toString() + " " + getSpeed();
     }
 }

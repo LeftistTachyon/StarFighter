@@ -4,46 +4,63 @@
 //Class -
 //Lab  -
 
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.io.File;
-import javax.imageio.ImageIO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlienHorde
-{
-	private List<Alien> aliens;
+public class AlienHorde {
+    private List<Alien> aliens;
 
-	public AlienHorde(int size)
-	{
-            aliens = new ArrayList<>(size);
-	}
+    public AlienHorde(int size) {
+        aliens = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            aliens.add(new Alien(i*50 + 10, 10, 50, 50, 1));
+        }
+    }
 
-	public void add(Alien al)
-	{
-            aliens.add(al);
-	}
+    public void add(Alien al) {
+        aliens.add(al);
+    }
 
-	public void drawEmAll( Graphics window )
-	{
-            for(Alien alien : aliens) {
-                alien.draw(window);
+    public void drawEmAll( Graphics window ) {
+        for(Alien alien : aliens) {
+            alien.draw(window);
+        }
+    }
+
+    public void moveEmAll() {
+        for (Alien alien : aliens) {
+            if(alien.getX() < 10 + alien.getWidth() || alien.getX() > 800 - (10 + alien.getWidth())) {
+                alien.setCurrentDirection("DOWN");
+            } else {
+                int row = alien.getY() / alien.getHeight();
+                if(row % 2 == 0) {
+                    alien.setCurrentDirection("RIGHT");
+                } else {
+                    alien.setCurrentDirection("DOWN");
+                }
             }
-	}
+            alien.move();
+        }
+    }
 
-	public void moveEmAll()
-	{
-	}
+    public void removeDeadOnes(List<Ammo> shots) {
+        try {
+            for(int i = aliens.size() - 1; i >= 0; i--) {
+                for(Ammo a:shots) {
+                    if(aliens.get(i).intersects(a)) {
+                        aliens.remove(i);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(shots + " " + aliens);
+        }
+    }
 
-	public void removeDeadOnes(List<Ammo> shots)
-	{
-	}
-
-        @Override
-	public String toString()
-	{
-		return "";
-	}
+    @Override
+    public String toString()
+    {
+            return "";
+    }
 }

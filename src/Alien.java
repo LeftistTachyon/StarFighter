@@ -5,8 +5,6 @@
 //Lab  -
 
 import java.io.File;
-import java.net.URL;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import javax.imageio.ImageIO;
@@ -14,6 +12,7 @@ import javax.imageio.ImageIO;
 public class Alien extends MovingThing {
     private int speed;
     private Image image;
+    private String currentDirection = "RIGHT";
 
     public Alien() {
         this(0,0,30,30,0);
@@ -69,17 +68,24 @@ public class Alien extends MovingThing {
                 xPos += speed;
                 break;
         }
+        resetHitBox();
+    }
+
+    public void setCurrentDirection(String currentDirection) {
+        this.currentDirection = currentDirection;
+    }
+    
+    public void move() {
+        move(currentDirection);
     }
 
     @Override
-    public void draw( Graphics window )
-    {
+    public void draw( Graphics window ) {
         window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Alien at (" + xPos + ", " + yPos + ")";
     }
 }

@@ -4,15 +4,17 @@
 //Class - 
 //Lab  -
 
-import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
 
 public abstract class MovingThing implements Moveable
 {
     protected int xPos;
     protected int yPos;
-    private int width;
-    private int height;
+    protected int width;
+    protected int height;
+    protected Rectangle2D shape;
 
     public MovingThing()
     {
@@ -31,6 +33,7 @@ public abstract class MovingThing implements Moveable
         yPos = y;
         width = w;
         height = h;
+        shape = new Rectangle2D.Double(x, y, w, h);
     }
 
     @Override
@@ -92,13 +95,15 @@ public abstract class MovingThing implements Moveable
     {
         return height;  //finish this method
     }
+    
+    protected void resetHitBox() {
+        shape = new Rectangle2D.Double(xPos, yPos, width, height);
+    }
+    
+    public boolean intersects(MovingThing other) {
+        return new Area(shape).intersects(other.shape);
+    }
 
     public abstract void move(String direction);
     public abstract void draw(Graphics window);
-
-    @Override
-    public String toString()
-    {
-        return getX() + " " + getY() + " " + getWidth() + " " + getHeight();
-    }
 }
