@@ -7,12 +7,15 @@
 import java.io.File;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
+import java.util.LinkedList;
+import java.util.Queue;
 import javax.imageio.ImageIO;
 
 public class Alien extends MovingThing {
     private int speed;
     private Image image;
-    private String currentDirection = "RIGHT";
+    private Queue<Point> toGo;
 
     public Alien() {
         this(0,0,30,30,0);
@@ -31,6 +34,7 @@ public class Alien extends MovingThing {
     public Alien(int x, int y, int w, int h, int s) {
         super(x, y, w,h);
         speed=s;
+        toGo = new LinkedList<>();
         try {
             File f = new File("images/alien.jpg");
             image = ImageIO.read( f );
@@ -70,13 +74,14 @@ public class Alien extends MovingThing {
         }
         resetHitBox();
     }
-
-    public void setCurrentDirection(String currentDirection) {
-        this.currentDirection = currentDirection;
-    }
     
     public void move() {
-        move(currentDirection);
+        if(toGo.isEmpty()) return;
+        
+    }
+    
+    public void addDestination(Point destination) {
+        toGo.offer(destination);
     }
 
     @Override
