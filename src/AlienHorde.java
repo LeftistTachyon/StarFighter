@@ -46,13 +46,14 @@ public class AlienHorde {
     public void removeDeadOnes(List<Ammo> shots) {
         try {
             for (int i = 0; i < aliens.size(); i++) {
-                for (Ammo a : shots) {
+                for (int j = shots.size() - 1; j >= 0; j--) {
                     if(aliens.isEmpty()) {
                         return;
                     }
                     while(aliens.get(i)
-                            .intersects(a)) {
+                            .intersects(shots.get(j))) {
                         aliens.remove(i);
+                        shots.remove(j);
                     }
                 }
             }

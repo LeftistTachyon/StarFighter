@@ -14,7 +14,7 @@ public class Ship extends MovingThing {
     private static int cntr = 0;
     private boolean dead = false;
     protected int speed;
-    private Image image;
+    private Image image, explosion;
 
     public Ship() {
         this(10,10,10,10,10);
@@ -36,6 +36,8 @@ public class Ship extends MovingThing {
         try {
             File f = new File("images/ship.jpg");
             image = ImageIO.read( f );
+            f = new File("images/explosion.gif");
+            explosion = ImageIO.read(f);
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -56,6 +58,7 @@ public class Ship extends MovingThing {
     @Override
     public void move(String direction) {
         //add code here
+        if(dead) return;
         switch(direction) {
             case "LEFT":
                 xPos -= speed;
@@ -78,7 +81,7 @@ public class Ship extends MovingThing {
     }
     
     public Ammo shoot() {
-        if(cntr != 20) {
+        if(cntr != 50) {
             return null;
         } else {
             cntr = 0;
@@ -92,6 +95,7 @@ public class Ship extends MovingThing {
         for(Alien alien : aliens) {
             if(intersects(alien)) {
                 dead = true;
+                cntr = 0;
                 return;
             }
         }
@@ -99,7 +103,9 @@ public class Ship extends MovingThing {
 
     @Override
     public void draw( Graphics window ) {
-        if(!dead) window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
+        if(!dead) window.drawImage(image, xPos, yPos, width, height, null); 
+        else if(cntr != 100)
+            window.drawImage(explosion, xPos - cntr, yPos - cntr, width + 2*cntr, height + 2*cntr, null);
     }
 
     @Override
@@ -108,6 +114,8 @@ public class Ship extends MovingThing {
     }
     
     public void upCnt() {
-        if(cntr < 20) cntr++;
+        if(dead) {
+            if(cntr < 100) cntr++;
+        } else if(cntr < 50) cntr++;
     }
 }
