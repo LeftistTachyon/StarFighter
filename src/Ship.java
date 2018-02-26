@@ -7,9 +7,12 @@
 import java.io.File;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.List;
 import javax.imageio.ImageIO;
 
 public class Ship extends MovingThing {
+    private static int cntr = 0;
+    private boolean dead = false;
     protected int speed;
     private Image image;
 
@@ -67,21 +70,44 @@ public class Ship extends MovingThing {
                 xPos += speed;
                 break;
         }
+        if(xPos < 0) xPos = 0;
+        if(xPos > 800 - width) xPos = 800 - width;
+        if(yPos < 0) yPos = 0;
+        if(yPos > 600 - width) yPos = 600 - height;
         resetHitBox();
     }
     
     public Ammo shoot() {
-        int middleX = xPos + (width / 2);
-        return new Ammo(middleX, yPos, 3);
+        if(cntr != 20) {
+            return null;
+        } else {
+            cntr = 0;
+            int middleX = xPos + (width / 2);
+            return new Ammo(middleX, yPos, 3);
+        }
+    }
+    
+    public void checkForDeath(List<Alien> aliens) {
+        if(dead) return;
+        for(Alien alien : aliens) {
+            if(intersects(alien)) {
+                dead = true;
+                return;
+            }
+        }
     }
 
     @Override
     public void draw( Graphics window ) {
-        window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
+        if(!dead) window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
     }
 
     @Override
     public String toString() {
         return super.toString() + " " + getSpeed();
+    }
+    
+    public void upCnt() {
+        if(cntr < 20) cntr++;
     }
 }

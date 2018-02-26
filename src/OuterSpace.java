@@ -11,7 +11,6 @@ import java.awt.Canvas;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 public class OuterSpace extends Canvas implements KeyListener, Runnable {
     private Ship ship;
@@ -33,7 +32,7 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable {
         //Ship, Alien
         ship = new Ship(375, 475, 50, 50, 2);
         
-        horde = new AlienHorde(15);
+        horde = new AlienHorde(150);
         
         shots = new Bullets();
 
@@ -84,7 +83,8 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable {
             ship.move("DOWN");
         }
         if(keys[4]) {
-            shots.add(ship.shoot());
+            Ammo shot = ship.shoot();
+            if(shot != null) shots.add(shot);
         }
         
         shots.cleanEmUp();
@@ -92,9 +92,12 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable {
         shots.moveEmAll();
         horde.removeDeadOnes(shots.getList());
         horde.moveEmAll();
+        ship.checkForDeath(horde.getAliens());
 
         //add in collision detection to see if Bullets hit the Aliens and if Bullets hit the Ship
-
+        ship.upCnt();
+        horde.upCnt();
+        
         ship.draw(gBack);
         horde.drawEmAll(gBack);
         shots.drawEmAll(gBack);
