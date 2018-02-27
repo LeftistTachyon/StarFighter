@@ -10,15 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlienHorde {
+    private static final Point[] destinations = {
+        new Point(725, 25), new Point(725, 100), new Point(25, 100), 
+        new Point(25, 175), new Point(725, 175), new Point(725, 250), 
+        new Point(25, 250), new Point(25, 25)
+    };
+    
     private static int cntr = 0;
     private List<Alien> aliens;
     private Ship ship;
 
     public AlienHorde(int size) {
         aliens = new ArrayList<>(size);
+        int distance = 750 / size;
         for (int i = 0; i < size; i++) {
             aliens.add(new Alien(
-                    (int) (Math.random() * 750), (int) (Math.random() * 10), 
+                    i * distance, 25, 
                     50, 50, 1));
         }
     }
@@ -35,9 +42,15 @@ public class AlienHorde {
 
     public void moveEmAll() {
         for (Alien alien : aliens) {
+            if(alien.atDestination()) {
+                alien.upCnt();
+                if(alien.getCnt() == destinations.length) alien.resetCnt();
+                alien.setDestination(destinations[alien.getCnt()]);
+            }
             alien.move();
         }
         if(cntr == 10 && ship != null) {
+            System.out.println("DIVE!");
             cntr = 0;
             aliens.get((int) (aliens.size() * Math.random())).setDestination(new Point(ship.getX(), ship.getY()));
         }

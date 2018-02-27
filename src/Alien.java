@@ -12,7 +12,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Alien extends MovingThing {
-    private int speed;
+    private int speed, cntr = 0;
     private Image image;
     private Point toGo;
     private static Random r = new Random();
@@ -77,10 +77,10 @@ public class Alien extends MovingThing {
     
     public void move() {
         if(xPos == toGo.x && yPos == toGo.y) {
-            toGo = new Point(r.nextInt(800 - width), r.nextInt(height));
+            return;
         }
         Point here = new Point(xPos, yPos);
-        double wey = speed/here.distance(toGo);
+        double wey = (speed)/here.distance(toGo);
         if(wey > 1) wey = 1;
         int xDiff = (int) Math.round(wey * (toGo.x - here.x)), 
                 yDiff = (int) Math.round(wey * (toGo.y - here.y));
@@ -92,10 +92,26 @@ public class Alien extends MovingThing {
     public void setDestination(Point p) {
         toGo = p;
     }
+    
+    public boolean atDestination() {
+        return xPos == toGo.x && yPos == toGo.y;
+    }
 
     @Override
     public void draw( Graphics window ) {
         window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
+    }
+    
+    public void upCnt() {
+        cntr++;
+    }
+
+    public int getCnt() {
+        return cntr;
+    }
+    
+    public void resetCnt() {
+        cntr = 0;
     }
 
     @Override
