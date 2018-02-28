@@ -7,6 +7,7 @@
 import java.io.File;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.util.List;
 import javax.imageio.ImageIO;
 
@@ -78,6 +79,11 @@ public class Ship extends MovingThing {
         if(yPos < 0) yPos = 0;
         if(yPos > 600 - width) yPos = 600 - height;
         resetHitBox();
+    }
+    
+    public void moveTo(Point p) {
+        xPos = p.x - width/2;
+        yPos = p.y;
     }
     
     public Ammo shoot() {

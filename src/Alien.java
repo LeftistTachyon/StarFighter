@@ -8,14 +8,16 @@ import java.io.File;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Alien extends MovingThing {
-    private int speed, cntr = 0;
+    private int speed;
     private Image image;
-    private Point toGo;
     private static Random r = new Random();
+    private Path p;
 
     public Alien() {
         this(0,0,30,30,0);
@@ -33,8 +35,8 @@ public class Alien extends MovingThing {
 
     public Alien(int x, int y, int w, int h, int s) {
         super(x, y, w,h);
+        p = new Path(new Point(x, y));
         speed = s;
-        toGo = new Point(r.nextInt(800 - width), r.nextInt(height));
         try {
             File f = new File("images/alien.jpg");
             image = ImageIO.read( f );
@@ -76,46 +78,71 @@ public class Alien extends MovingThing {
     }
     
     public void move() {
-        if(xPos == toGo.x && yPos == toGo.y) {
+        if(p.atCurrent(xPos, yPos)) {
             return;
         }
         Point here = new Point(xPos, yPos);
-        double wey = (speed)/here.distance(toGo);
+        double wey = (speed)/here.distance(p.current());
         if(wey > 1) wey = 1;
-        int xDiff = (int) Math.round(wey * (toGo.x - here.x)), 
-                yDiff = (int) Math.round(wey * (toGo.y - here.y));
+        int xDiff = (int) Math.round(wey * (p.current().x - here.x)), 
+                yDiff = (int) Math.round(wey * (p.current().y - here.y));
         xPos += xDiff;
         yPos += yDiff;
         resetHitBox();
-    }
-    
-    public void setDestination(Point p) {
-        toGo = p;
-    }
-    
-    public boolean atDestination() {
-        return xPos == toGo.x && yPos == toGo.y;
     }
 
     @Override
     public void draw( Graphics window ) {
         window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
     }
-    
-    public void upCnt() {
-        cntr++;
-    }
-
-    public int getCnt() {
-        return cntr;
-    }
-    
-    public void resetCnt() {
-        cntr = 0;
-    }
 
     @Override
     public String toString() {
         return "Alien at (" + xPos + ", " + yPos + ")";
+    }
+
+    public Path getPath() {
+        return p;
+    }
+
+    public void setPath(Path p) {
+        this.p = p;
+    }
+    
+    static class Path {
+        private ArrayList<Point> path;
+        private int at = 0;
+        
+        public Path(Point... p) {
+            path = new ArrayList<>();
+            path.addAll(Arrays.asList(p));
+        }
+        
+        public Point next() {
+            at++;
+            if(at == path.size()) at = 0;
+            Point output = path.get(at);
+            return output;
+        }
+        
+        public boolean atCurrent(int x, int y) {
+            return path.get(at).x == x && path.get(at).y == y;
+        }
+        
+        public Point current() {
+            return path.get(at);
+        }
+        
+        public void addDestination(Point p) {
+            path.add(p);
+        }
+        
+        public void addDestination(int idx, Point p) {
+            path.add(idx, p);
+        }
+        
+        public int destinations() {
+            return path.size();
+        }
     }
 }

@@ -8,35 +8,38 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Canvas;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
-public class OuterSpace extends Canvas implements KeyListener, Runnable {
+public class OuterSpace extends Canvas implements MouseListener, Runnable {
     private Ship ship;
 
     // uncomment once you are ready for this part
     private AlienHorde horde;
     private Bullets shots;
     
-
-    private boolean[] keys;
+    private boolean shooting;
+    
     private BufferedImage back;
+    
+    private Point lastValidPoint;
 
     public OuterSpace() {
         setBackground(Color.black);
 
-        keys = new boolean[5];
-
         //instantiate other instance variables
         //Ship, Alien
         ship = new Ship(375, 475, 50, 50, 2);
+        lastValidPoint = new Point(375, 475);
         
-        horde = new AlienHorde(5);
+        horde = new AlienHorde(10);
+        horde.setShip(ship);
         
         shots = new Bullets();
 
-        addKeyListener(this);
+        addMouseListener(this);
         new Thread(this).start();
 
         setVisible(true);
@@ -63,6 +66,9 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable {
         //create a graphics reference to the back ground image
         //we will draw all changes on the background image
         Graphics gBack = back.createGraphics();
+        
+        Point mouse = getMousePosition();
+        if(mouse != null) lastValidPoint = mouse;
 
         gBack.setColor(Color.BLUE);
         gBack.drawString("StarFighter ", 25, 50 );
@@ -70,7 +76,7 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable {
         gBack.fillRect(0,0,800,600);
 
         //add code to move Ship, Alien, etc.
-        if(keys[0]) {
+        /*if(keys[0]) {
             ship.move("LEFT");
         }
         if(keys[1]) {
@@ -81,8 +87,9 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable {
         }
         if(keys[3]) {
             ship.move("DOWN");
-        }
-        if(keys[4]) {
+        }*/
+        ship.moveTo(lastValidPoint);
+        if(shooting) {
             Ammo shot = ship.shoot();
             if(shot != null) shots.add(shot);
         }
@@ -105,52 +112,6 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable {
         g2D.drawImage(back, null, 0, 0);
     }
 
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-            keys[0] = true;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            keys[1] = true;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_UP) {
-            keys[2] = true;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-            keys[3] = true;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-            keys[4] = true;
-        }
-        repaint();
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-            keys[0] = false;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            keys[1] = false;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_UP) {
-            keys[2] = false;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-            keys[3] = false;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-            keys[4] = false;
-        }
-        repaint();
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-        //no code needed here
-    }
-
     @Override
     public void run() {
         try {
@@ -161,5 +122,27 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable {
         } catch(Exception e){
         }
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        Ammo shot = ship.shoot();
+        if(shot != null) shots.add(shot);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        shooting = true;
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        shooting = false;
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) { }
+
+    @Override
+    public void mouseExited(MouseEvent e) { }
 }
 

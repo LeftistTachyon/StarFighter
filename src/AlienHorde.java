@@ -24,9 +24,11 @@ public class AlienHorde {
         aliens = new ArrayList<>(size);
         int distance = 750 / size;
         for (int i = 0; i < size; i++) {
-            aliens.add(new Alien(
+            Alien a = new Alien(
                     i * distance, 25, 
-                    50, 50, 1));
+                    50, 50, 2);
+            a.setPath(new Alien.Path(destinations));
+            aliens.add(a);
         }
     }
 
@@ -42,17 +44,17 @@ public class AlienHorde {
 
     public void moveEmAll() {
         for (Alien alien : aliens) {
-            if(alien.atDestination()) {
-                alien.upCnt();
-                if(alien.getCnt() == destinations.length) alien.resetCnt();
-                alien.setDestination(destinations[alien.getCnt()]);
+            Alien.Path path = alien.getPath();
+            if(path.atCurrent(alien.getX(), alien.getY())) {
+                path.next();
             }
             alien.move();
         }
-        if(cntr == 10 && ship != null) {
+        if(cntr == 50 && ship != null) {
             System.out.println("DIVE!");
             cntr = 0;
-            aliens.get((int) (aliens.size() * Math.random())).setDestination(new Point(ship.getX(), ship.getY()));
+            Alien.Path path = aliens.get((int) (aliens.size() * Math.random())).getPath();
+            path.addDestination((int) (Math.random() * path.destinations()), new Point(ship.getX(), ship.getY()));
         }
     }
 
@@ -89,6 +91,6 @@ public class AlienHorde {
     }
     
     public void upCnt() {
-        if(cntr < 10) cntr++;
+        if(cntr < 50) cntr++;
     }
 }
