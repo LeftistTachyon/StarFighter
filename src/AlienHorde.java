@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlienHorde {
+    private static final int LIMIT = 50;
+    
     private static final Point[] destinations = {
         new Point(725, 25), new Point(725, 100), new Point(25, 100), 
         new Point(25, 175), new Point(725, 175), new Point(725, 250), 
@@ -49,12 +51,18 @@ public class AlienHorde {
                 path.next();
             }
             alien.move();
+            alien.resetHitBox();
         }
-        if(cntr == 50 && ship != null) {
-            System.out.println("DIVE!");
+        if(cntr == LIMIT && ship != null && !aliens.isEmpty()) {
             cntr = 0;
             Alien.Path path = aliens.get((int) (aliens.size() * Math.random())).getPath();
             path.addDestination((int) (Math.random() * path.destinations()), new Point(ship.getX(), ship.getY()));
+        }
+    }
+    
+    public void drawAllHitboxes(Graphics g) {
+        for (Alien alien : aliens) {
+            alien.drawBounds(g);
         }
     }
 
@@ -66,7 +74,7 @@ public class AlienHorde {
                         return;
                     }
                     while(aliens.get(i)
-                            .intersects(shots.get(j))) {
+                            .intersects(shots.get(j)) && shots.get(j).fromShip) {
                         aliens.remove(i);
                         shots.remove(j);
                     }
@@ -91,6 +99,6 @@ public class AlienHorde {
     }
     
     public void upCnt() {
-        if(cntr < 50) cntr++;
+        if(cntr < LIMIT) cntr++;
     }
 }

@@ -84,6 +84,7 @@ public class Ship extends MovingThing {
     public void moveTo(Point p) {
         xPos = p.x - width/2;
         yPos = p.y;
+        resetHitBox();
     }
     
     public Ammo shoot() {
@@ -92,11 +93,11 @@ public class Ship extends MovingThing {
         } else {
             cntr = 0;
             int middleX = xPos + (width / 2);
-            return new Ammo(middleX, yPos, 3);
+            return new Ammo(middleX, yPos, 3, true);
         }
     }
     
-    public void checkForDeath(List<Alien> aliens) {
+    public void checkForAlienDeath(List<Alien> aliens) {
         if(dead) return;
         for(Alien alien : aliens) {
             if(intersects(alien)) {
@@ -105,6 +106,10 @@ public class Ship extends MovingThing {
                 return;
             }
         }
+    }
+    
+    public void checkForBulletDeath(List<Ammo> bullets) {
+        
     }
 
     @Override

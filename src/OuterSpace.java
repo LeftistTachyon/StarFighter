@@ -34,7 +34,7 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         ship = new Ship(375, 475, 50, 50, 2);
         lastValidPoint = new Point(375, 475);
         
-        horde = new AlienHorde(10);
+        horde = new AlienHorde(20);
         horde.setShip(ship);
         
         shots = new Bullets();
@@ -99,7 +99,9 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         shots.moveEmAll();
         horde.removeDeadOnes(shots.getList());
         horde.moveEmAll();
-        ship.checkForDeath(horde.getAliens());
+        // horde.drawAllHitboxes(gBack);
+        ship.checkForAlienDeath(horde.getAliens());
+        // ship.drawBounds(gBack);
 
         //add in collision detection to see if Bullets hit the Aliens and if Bullets hit the Ship
         ship.upCnt();

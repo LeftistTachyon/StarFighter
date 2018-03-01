@@ -4,6 +4,7 @@
 //Class - 
 //Lab  -
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
@@ -14,6 +15,7 @@ public abstract class MovingThing implements Moveable
     protected int yPos;
     protected int width;
     protected int height;
+    protected boolean drawBounds = false;
     protected Rectangle2D shape;
 
     public MovingThing()
@@ -98,6 +100,11 @@ public abstract class MovingThing implements Moveable
     
     protected void resetHitBox() {
         shape = new Rectangle2D.Double(xPos, yPos, width, height);
+    }
+    
+    public void drawBounds(Graphics g) {
+        g.setColor(Color.red);
+        g.drawRect((int) shape.getX(), (int) shape.getY(), (int) shape.getWidth(), (int) shape.getHeight());
     }
     
     public boolean intersects(MovingThing other) {

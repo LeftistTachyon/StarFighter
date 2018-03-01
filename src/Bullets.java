@@ -34,7 +34,7 @@ public class Bullets {
 
     public void cleanEmUp() {
         for(int i = ammo.size()-1;i>=0;i--) {
-            if(ammo.get(i).getY() <= -10) {
+            if(ammo.get(i).getY() <= -10 || ammo.get(i).getY() >= 660) {
                 ammo.remove(i);
             }
         }
