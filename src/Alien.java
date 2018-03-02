@@ -10,13 +10,11 @@ import java.awt.Image;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Alien extends MovingThing {
     private int speed;
     private Image image;
-    private static Random r = new Random();
     private Path p;
 
     public Alien() {
@@ -107,6 +105,13 @@ public class Alien extends MovingThing {
 
     public void setPath(Path p) {
         this.p = p;
+    }
+    
+    public Ammo shoot() {
+        if(Math.random() * 100 < 0.1) { // 10 percent chance
+            return new Ammo(xPos + width/2, yPos + height, 3, false);
+        }
+        return null;
     }
     
     static class Path {

@@ -18,6 +18,10 @@ public class Bullets {
     public void add(Ammo al) {
         ammo.add(al);
     }
+    
+    public void addAll(ArrayList<Ammo> as) {
+        ammo.addAll(as);
+    }
 
     //post - draw each Ammo
     public void drawEmAll( Graphics g ) {

@@ -84,6 +84,15 @@ public class AlienHorde {
             System.out.println("HELP: " + e.toString());
         }
     }
+    
+    public ArrayList<Ammo> shootAll() {
+        ArrayList<Ammo> output = new ArrayList<>();
+        for (Alien alien : aliens) {
+            Ammo a = alien.shoot();
+            if(a != null) output.add(a);
+        }
+        return output;
+    }
 
     public List<Alien> getAliens() {
         return aliens;

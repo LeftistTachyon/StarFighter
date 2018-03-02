@@ -88,7 +88,7 @@ public class Ship extends MovingThing {
     }
     
     public Ammo shoot() {
-        if(cntr != 50) {
+        if(cntr != 50 || dead) {
             return null;
         } else {
             cntr = 0;
@@ -99,8 +99,9 @@ public class Ship extends MovingThing {
     
     public void checkForAlienDeath(List<Alien> aliens) {
         if(dead) return;
-        for(Alien alien : aliens) {
-            if(intersects(alien)) {
+        for(int i = 0;i<aliens.size();i++) {
+            if(intersects(aliens.get(i))) {
+                aliens.remove(i);
                 dead = true;
                 cntr = 0;
                 return;
@@ -109,7 +110,15 @@ public class Ship extends MovingThing {
     }
     
     public void checkForBulletDeath(List<Ammo> bullets) {
-        
+        if(dead) return;
+        for(int i = 0;i<bullets.size();i++) {
+            if(intersects(bullets.get(i))) {
+                bullets.remove(i);
+                dead = true;
+                cntr = 0;
+                return;
+            }
+        }
     }
 
     @Override

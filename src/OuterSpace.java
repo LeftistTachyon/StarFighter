@@ -18,7 +18,7 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
 
     // uncomment once you are ready for this part
     private AlienHorde horde;
-    private Bullets shots;
+    private Bullets shipShots, alienShots;
     
     private boolean shooting;
     
@@ -37,7 +37,9 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         horde = new AlienHorde(20);
         horde.setShip(ship);
         
-        shots = new Bullets();
+        shipShots = new Bullets();
+        
+        alienShots = new Bullets();
 
         addMouseListener(this);
         new Thread(this).start();
@@ -54,9 +56,6 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
     public void paint( Graphics g ) {
         //set up the double buffering to make the game animation nice and smooth
         Graphics2D g2D = (Graphics2D)g;
-        
-        //g2D.setPaint(Color.WHITE);
-        //g2D.fillRect(0, 0, 50, 50);
 
         //take a snap shop of the current screen and same it as an image
         //that is the exact same width and height as the current screen
@@ -74,33 +73,24 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         gBack.drawString("StarFighter ", 25, 50 );
         gBack.setColor(Color.BLACK);
         gBack.fillRect(0,0,800,600);
-
-        //add code to move Ship, Alien, etc.
-        /*if(keys[0]) {
-            ship.move("LEFT");
-        }
-        if(keys[1]) {
-            ship.move("RIGHT");
-        }
-        if(keys[2]) {
-            ship.move("UP");
-        }
-        if(keys[3]) {
-            ship.move("DOWN");
-        }*/
+        
         ship.moveTo(lastValidPoint);
         if(shooting) {
             Ammo shot = ship.shoot();
-            if(shot != null) shots.add(shot);
+            if(shot != null) shipShots.add(shot);
         }
         
-        shots.cleanEmUp();
+        shipShots.cleanEmUp();
+        alienShots.cleanEmUp();
         
-        shots.moveEmAll();
-        horde.removeDeadOnes(shots.getList());
+        shipShots.moveEmAll();
+        horde.removeDeadOnes(shipShots.getList());
         horde.moveEmAll();
+        alienShots.moveEmAll();
+        alienShots.addAll(horde.shootAll());
         // horde.drawAllHitboxes(gBack);
         ship.checkForAlienDeath(horde.getAliens());
+        ship.checkForBulletDeath(alienShots.getList());
         // ship.drawBounds(gBack);
 
         //add in collision detection to see if Bullets hit the Aliens and if Bullets hit the Ship
@@ -109,7 +99,8 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         
         ship.draw(gBack);
         horde.drawEmAll(gBack);
-        shots.drawEmAll(gBack);
+        shipShots.drawEmAll(gBack);
+        alienShots.drawEmAll(gBack);
 
         g2D.drawImage(back, null, 0, 0);
     }
@@ -128,7 +119,7 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
     @Override
     public void mouseClicked(MouseEvent e) {
         Ammo shot = ship.shoot();
-        if(shot != null) shots.add(shot);
+        if(shot != null) shipShots.add(shot);
     }
 
     @Override
