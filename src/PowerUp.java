@@ -16,8 +16,7 @@ public class PowerUp extends MovingThing {
     public PowerUp(int x, int y, int w, int h, int s) {
         super(x, y, w, h);
         speed = s;
-        int r = (int) (Math.random() * Type.values().length - 1);
-        type = Type.values()[r];
+        type = Type.random();
     }
 
     @Override
@@ -26,7 +25,12 @@ public class PowerUp extends MovingThing {
     }
 
     public void move() {
-        yPos -= speed;
+        yPos += speed;
+        resetHitBox();
+    }
+
+    public Type getType() {
+        return type;
     }
 
     @Override
@@ -38,6 +42,14 @@ public class PowerUp extends MovingThing {
                 window.setColor(Color.BLACK);
                 window.fillOval(xPos + width/8, yPos, width*3/4, height*3/4);
                 window.setColor(Color.WHITE);
+                window.fillOval(xPos + width/4, yPos + height/4, width/2, height/2);
+                break;
+            case ULTRASHOT:
+                window.setColor(Color.RED);
+                window.fillOval(xPos, yPos, width, height);
+                window.setColor(Color.ORANGE);
+                window.fillOval(xPos + width/4, yPos, width/2, height);
+                window.setColor(Color.YELLOW);
                 window.fillOval(xPos + width/4, yPos + height/4, width/2, height/2);
                 break;
             case NULL:
@@ -57,6 +69,34 @@ public class PowerUp extends MovingThing {
     }
     
     public enum Type {
-        MULTISHOT(), NULL();
+        MULTISHOT(1.0), ULTRASHOT(0.1), NULL(0.0);
+        
+        private final double weight;
+        
+        private Type(double w) {
+            weight = w;
+        }
+
+        public double getWeight() {
+            return weight;
+        }
+        
+        public static double totalWeights() {
+            double output = 0;
+            for(Type type : values()) {
+                output += type.weight;
+            }
+            return output;
+        }
+        
+        public static Type random() {
+            double r = Math.random() * totalWeights();
+            for(Type type : values()) {
+                if(r < type.weight) {
+                    return type;
+                } else r -= type.weight;
+            }
+            return NULL;
+        }
     }
 }

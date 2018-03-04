@@ -38,8 +38,23 @@ public class Bullets {
 
     public void cleanEmUp() {
         for(int i = ammo.size()-1;i>=0;i--) {
-            if(ammo.get(i).getY() <= -10 || ammo.get(i).getY() >= 660) {
+            Ammo a = ammo.get(i);
+            if(a.getY() <= -a.getHeight() || a.getY() >= StarFighter.HEIGHT + a.getHeight()) {
                 ammo.remove(i);
+            }
+        }
+    }
+    
+    public void removeCollided(List<Ammo> bullets) {
+        if(ammo == null || ammo.isEmpty() || bullets == null || bullets.isEmpty()) return;
+        for(int i = ammo.size()-1; i >= 0; i--) {
+            for(int j = bullets.size()-1; j >= 0; j--) {
+                if(ammo.get(i).intersects(bullets.get(j))) {
+                    ammo.remove(i);
+                    bullets.remove(j);
+                    if(i == ammo.size()) i--;
+                    if(j == bullets.size()) j--;
+                }
             }
         }
     }

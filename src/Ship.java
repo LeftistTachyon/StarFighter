@@ -8,12 +8,14 @@ import java.io.File;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 
 public class Ship extends MovingThing {
     private static int cntr = 0;
     private boolean dead = false;
+    private int multishot = -1, ultrashot = -1;
     protected int speed;
     private Image image, explosion;
 
@@ -75,25 +77,36 @@ public class Ship extends MovingThing {
                 break;
         }
         if(xPos < 0) xPos = 0;
-        if(xPos > 800 - width) xPos = 800 - width;
+        if(xPos > StarFighter.WIDTH - width) xPos = StarFighter.WIDTH - width;
         if(yPos < 0) yPos = 0;
-        if(yPos > 600 - width) yPos = 600 - height;
+        if(yPos > StarFighter.HEIGHT - width) yPos = StarFighter.HEIGHT - height;
         resetHitBox();
     }
     
     public void moveTo(Point p) {
+        if(dead) return;
         xPos = p.x - width/2;
         yPos = p.y;
         resetHitBox();
     }
     
-    public Ammo shoot() {
+    public ArrayList<Ammo> shoot() {
         if(cntr != 50 || dead) {
             return null;
         } else {
             cntr = 0;
+            ArrayList<Ammo> output = new ArrayList<>();
             int middleX = xPos + (width / 2);
-            return new Ammo(middleX, yPos, 3, true);
+            output.add(new Ammo(middleX, yPos, 3, true));
+            if(multishot > 0 || ultrashot > 0) {
+                output.add(new Ammo(xPos + (3*width/10), yPos + (height/4), 3, true));
+                output.add(new Ammo(xPos + (7*width/10), yPos + (height/4), 3, true));
+            }
+            if (ultrashot > 0) {
+                output.add(new Ammo(xPos + (width / 10), yPos + (height / 2), 3, true));
+                output.add(new Ammo(xPos + (9 * width / 10), yPos + (height / 2), 3, true));
+            }
+            return output;
         }
     }
     
@@ -120,6 +133,16 @@ public class Ship extends MovingThing {
             }
         }
     }
+    
+    public void checkForPowerUps(List<PowerUp> powerUps) {
+        if(dead) return;
+        for(int i = powerUps.size() - 1; i >= 0; i--) {
+            if(intersects(powerUps.get(i))) {
+                PowerUp pu = powerUps.remove(i);
+                powerUp(pu.getType());
+            }
+        }
+    }
 
     @Override
     public void draw( Graphics window ) {
@@ -137,5 +160,22 @@ public class Ship extends MovingThing {
         if(dead) {
             if(cntr < 100) cntr++;
         } else if(cntr < 50) cntr++;
+        if(multishot >= 0) multishot--;
+        if(ultrashot >= 0) ultrashot--;
+    }
+    
+    public void powerUp(PowerUp.Type type) {
+        switch(type) {
+            case MULTISHOT:
+                multishot = 500;
+                break;
+            case ULTRASHOT:
+                ultrashot = 250;
+                break;
+        }
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 }

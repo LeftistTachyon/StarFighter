@@ -8,8 +8,8 @@ import javax.swing.JFrame;
 import java.awt.Component;
 
 public class StarFighter extends JFrame {
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 600;
+    public static final int WIDTH = 1200;
+    public static final int HEIGHT = 800;
 
     public StarFighter() {
         super("STARFIGHTER");

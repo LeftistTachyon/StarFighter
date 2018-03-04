@@ -108,13 +108,20 @@ public class Alien extends MovingThing {
     }
     
     public Ammo shoot() {
-        if(Math.random() * 100 < 0.1) { // 10 percent chance
+        if(Math.random() * 100 < 0.1) { // 0.1 percent chance
             return new Ammo(xPos + width/2, yPos + height, 3, false);
         }
         return null;
     }
     
-    static class Path {
+    public PowerUp dropPowerUp() {
+        if(Math.random() * 100 < 15) { // 5 percent chance
+            return new PowerUp(xPos + width/2, yPos + height, 30, 30, 1);
+        }
+        return null;
+    }
+    
+    public static class Path {
         private ArrayList<Point> path;
         private int at = 0;
         
