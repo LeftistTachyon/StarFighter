@@ -53,7 +53,9 @@ public class Bullets {
                     ammo.remove(i);
                     bullets.remove(j);
                     if(i == ammo.size()) i--;
+                    if(i == -1) return;
                     if(j == bullets.size()) j--;
+                    if(j == -1) return;
                 }
             }
         }

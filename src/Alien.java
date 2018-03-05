@@ -115,7 +115,7 @@ public class Alien extends MovingThing {
     }
     
     public PowerUp dropPowerUp() {
-        if(Math.random() * 100 < 15) { // 5 percent chance
+        if(Math.random() * 100 < 5) { // 5 percent chance
             return new PowerUp(xPos + width/2, yPos + height, 30, 30, 1);
         }
         return null;

@@ -34,10 +34,10 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
 
         //instantiate other instance variables
         //Ship, Alien
-        ship = new Ship(375, 475, 50, 50, 2);
+        ship = new Ship(StarFighter.WIDTH/2 - 25, StarFighter.HEIGHT - 125, 50, 50, 2);
         lastValidPoint = new Point(375, 475);
         
-        horde = new AlienHorde(20);
+        horde = new AlienHorde(30);
         horde.setShip(ship);
         
         shipShots = new Bullets();

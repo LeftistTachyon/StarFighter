@@ -12,10 +12,16 @@ import java.util.List;
 public class AlienHorde {
     private static final int LIMIT = 50;
     
-    private static final Point[] destinations = {
+    private static final Point[] destinations1 = {
         new Point(StarFighter.WIDTH - 75, 25), new Point(StarFighter.WIDTH - 75, 100), new Point(25, 100), 
         new Point(25, 175), new Point(StarFighter.WIDTH - 75, 175), new Point(StarFighter.WIDTH - 75, 250), 
         new Point(25, 250), new Point(25, 25)
+    };
+    
+    private static final Point[] destinations2 = {
+        new Point(25, 100), new Point(25, 175), new Point(StarFighter.WIDTH - 75, 175), 
+        new Point(StarFighter.WIDTH - 75, 250), new Point(25, 250), new Point(25, 25), 
+        new Point(StarFighter.WIDTH - 75, 25), new Point(StarFighter.WIDTH - 75, 100)
     };
     
     private static int cntr = 0;
@@ -27,10 +33,14 @@ public class AlienHorde {
         newlyDead = new ArrayList<>();
         int distance = (StarFighter.WIDTH - 50) / size;
         for (int i = 0; i < size; i++) {
-            Alien a = new Alien(
-                    i * distance, 25, 
-                    50, 50, 2);
-            a.setPath(new Alien.Path(destinations));
+            Alien a;
+            if(i % 2 == 0) {
+                a = new Alien(i * distance, 25, 50, 50, 2);
+                a.setPath(new Alien.Path(destinations1));
+            } else {
+                a = new Alien(i * distance, 100, 50, 50, 2);
+                a.setPath(new Alien.Path(destinations2));
+            }
             aliens.add(a);
         }
     }
