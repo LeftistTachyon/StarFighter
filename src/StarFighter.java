@@ -16,7 +16,7 @@ import java.awt.image.RGBImageFilter;
 
 public class StarFighter extends JFrame {
     public static final int WIDTH = 1200;
-    public static final int HEIGHT = 850;
+    public static final int HEIGHT = 900;
 
     public StarFighter() {
         super("STARFIGHTER");

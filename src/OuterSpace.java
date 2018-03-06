@@ -22,6 +22,17 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
             WINDOW_HEIGHT = StarFighter.HEIGHT - 100, WINDOW_DX = 25, 
             WINDOW_DY = 75;
     
+    private static BufferedImage scoreImage;
+    
+    static {
+        try {
+            scoreImage = ImageIO.read(new File("images/score.jpg"));
+        } catch (IOException ex) {
+            scoreImage = null;
+            System.out.println("Cannot find image score.jpg");
+        }
+    }
+    
     private Ship ship;
 
     // uncomment once you are ready for this part
@@ -30,13 +41,15 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
     
     private PowerUps powerUps;
     
-    private boolean shooting, foughtBoss = false;
+    private boolean shooting, foughtBoss = false, beatBoss = false;
     
     private BufferedImage back, window;
     
     private Point lastValidPoint;
     
     private int score = 0;
+    
+    private int cntr = 0;
 
     public OuterSpace() {
         setBackground(Color.black);
@@ -87,7 +100,8 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         gBack.setColor(Color.GRAY);
         gBack.fillRect(WINDOW_DX - 2, WINDOW_DY - 2, WINDOW_WIDTH + 4, WINDOW_HEIGHT + 4);
         
-        Number.draw(score, 25, 15, gBack);
+        gBack.drawImage(scoreImage, null, 25, 15);
+        Number.draw(score, 240, 15, gBack);
         
         Graphics gWindow = window.createGraphics();
         
@@ -125,15 +139,31 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         ship.checkForPowerUps(powerUps.getList());
         // ship.drawBounds(gBack);
         
-        if(!foughtBoss && horde.allDead() && !ship.isDead()) {
-            foughtBoss = true;
-            horde = new AlienHorde(0);
-            int hordeSize = 50;
-            int distance = (WINDOW_WIDTH - 50) / hordeSize;
-            Alien.Path ap = new Alien.Path(AlienHorde.destinations1);
-            for(int i = 0; i < hordeSize; i++) {
-                Alien a = new Alien(i * distance, 25, 50, 50, 2);
-                a.setPath(ap);
+        if(horde.allDead() && !ship.isDead()) {
+            if (!foughtBoss) {
+                foughtBoss = true;
+                horde = new AlienHorde(0);
+                int hordeSize = 50;
+                int distance = (WINDOW_WIDTH - 50) / hordeSize;
+                Alien.Path ap = new Alien.Path(AlienHorde.destinations1);
+                for (int i = 0; i < hordeSize; i++) {
+                    Alien a = new Alien(i * distance, 25, 50, 50, 2);
+                    a.setPath(ap);
+                    horde.add(a);
+                }
+            } else if(!beatBoss) {
+                beatBoss = true;
+                horde = new AlienHorde(0);
+            }
+        }
+        
+        if(beatBoss) {
+            cntr++;
+            int releaseAt = 10000 / score;
+            if(cntr >= releaseAt) {
+                cntr = 0;
+                Alien a = new Alien(25, 25, 50, 50, 2);
+                a.setPath(new Alien.Path(AlienHorde.destinations1));
                 horde.add(a);
             }
         }

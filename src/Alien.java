@@ -133,6 +133,11 @@ public class Alien extends MovingThing {
             path.addAll(Arrays.asList(p));
         }
         
+        public Path(Path p) {
+            path = new ArrayList<>(p.path);
+            at = p.at;
+        }
+        
         public Point next() {
             at++;
             if(at == path.size()) at = 0;
