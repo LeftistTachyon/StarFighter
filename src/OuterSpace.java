@@ -163,7 +163,7 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
             if(cntr >= releaseAt) {
                 cntr = 0;
                 Alien a = new Alien(25, 25, 50, 50, 2);
-                a.setPath(new Alien.Path(AlienHorde.destinations1));
+                a.setPath(new Alien.Path(AlienHorde.destinationsInfinite));
                 horde.add(a);
             }
         }

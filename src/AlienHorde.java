@@ -24,6 +24,23 @@ public class AlienHorde {
         new Point(OuterSpace.WINDOW_WIDTH - 75, 25), new Point(OuterSpace.WINDOW_WIDTH - 75, 100)
     };
     
+    public static final Point[] destinationsInfinite;
+    
+    static {
+        ArrayList<Point> destinations = new ArrayList<>();
+        for(int i = 25; i <= 925; i += 150) {
+            destinations.add(new Point(OuterSpace.WINDOW_WIDTH - 75, i));
+            destinations.add(new Point(OuterSpace.WINDOW_WIDTH - 75, i + 75));
+            destinations.add(new Point(25, i + 75));
+            destinations.add(new Point(25, i + 150));
+        }
+        destinations.add(new Point(25, 25));
+        destinationsInfinite = new Point[destinations.size()];
+        for(int i = 0; i < destinations.size(); i++) {
+            destinationsInfinite[i] = destinations.get(i);
+        }
+    }
+    
     private static int cntr = 0;
     private List<Alien> aliens, newlyDead;
     private Ship ship;
