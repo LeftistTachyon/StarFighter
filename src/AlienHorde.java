@@ -12,16 +12,16 @@ import java.util.List;
 public class AlienHorde {
     private static final int LIMIT = 50;
     
-    private static final Point[] destinations1 = {
-        new Point(StarFighter.WIDTH - 75, 25), new Point(StarFighter.WIDTH - 75, 100), new Point(25, 100), 
-        new Point(25, 175), new Point(StarFighter.WIDTH - 75, 175), new Point(StarFighter.WIDTH - 75, 250), 
+    public static final Point[] destinations1 = {
+        new Point(OuterSpace.WINDOW_WIDTH - 75, 25), new Point(OuterSpace.WINDOW_WIDTH - 75, 100), new Point(25, 100), 
+        new Point(25, 175), new Point(OuterSpace.WINDOW_WIDTH - 75, 175), new Point(OuterSpace.WINDOW_WIDTH - 75, 250), 
         new Point(25, 250), new Point(25, 25)
     };
     
-    private static final Point[] destinations2 = {
-        new Point(25, 100), new Point(25, 175), new Point(StarFighter.WIDTH - 75, 175), 
-        new Point(StarFighter.WIDTH - 75, 250), new Point(25, 250), new Point(25, 25), 
-        new Point(StarFighter.WIDTH - 75, 25), new Point(StarFighter.WIDTH - 75, 100)
+    public static final Point[] destinations2 = {
+        new Point(25, 100), new Point(25, 175), new Point(OuterSpace.WINDOW_WIDTH - 75, 175), 
+        new Point(OuterSpace.WINDOW_WIDTH - 75, 250), new Point(25, 250), new Point(25, 25), 
+        new Point(OuterSpace.WINDOW_WIDTH - 75, 25), new Point(OuterSpace.WINDOW_WIDTH - 75, 100)
     };
     
     private static int cntr = 0;
@@ -31,7 +31,8 @@ public class AlienHorde {
     public AlienHorde(int size) {
         aliens = new ArrayList<>(size);
         newlyDead = new ArrayList<>();
-        int distance = (StarFighter.WIDTH - 50) / size;
+        if(size == 0) return;
+        int distance = (OuterSpace.WINDOW_WIDTH - 50) / size;
         for (int i = 0; i < size; i++) {
             Alien a;
             if(i % 2 == 0) {
@@ -47,6 +48,10 @@ public class AlienHorde {
 
     public void add(Alien al) {
         aliens.add(al);
+    }
+    
+    public void addAll(ArrayList<Alien> as) {
+        aliens.addAll(as);
     }
 
     public void drawEmAll( Graphics window ) {
@@ -69,6 +74,10 @@ public class AlienHorde {
             Alien.Path path = aliens.get((int) (aliens.size() * Math.random())).getPath();
             path.addDestination((int) (Math.random() * path.destinations()), new Point(ship.getX(), ship.getY()));
         }
+    }
+    
+    public int getNumNewlyDead() {
+        return newlyDead.size();
     }
     
     public void drawAllHitboxes(Graphics g) {
@@ -121,6 +130,10 @@ public class AlienHorde {
 
     public List<Alien> getAliens() {
         return aliens;
+    }
+    
+    public boolean allDead() {
+        return aliens.isEmpty();
     }
     
     public void setShip(Ship s) {

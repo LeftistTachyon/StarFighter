@@ -12,9 +12,16 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 
 public class OuterSpace extends Canvas implements MouseListener, Runnable {
+    public static final int WINDOW_WIDTH = StarFighter.WIDTH - 50, 
+            WINDOW_HEIGHT = StarFighter.HEIGHT - 100, WINDOW_DX = 25, 
+            WINDOW_DY = 75;
+    
     private Ship ship;
 
     // uncomment once you are ready for this part
@@ -23,18 +30,20 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
     
     private PowerUps powerUps;
     
-    private boolean shooting;
+    private boolean shooting, foughtBoss = false;
     
-    private BufferedImage back;
+    private BufferedImage back, window;
     
     private Point lastValidPoint;
+    
+    private int score = 0;
 
     public OuterSpace() {
         setBackground(Color.black);
 
         //instantiate other instance variables
         //Ship, Alien
-        ship = new Ship(StarFighter.WIDTH/2 - 25, StarFighter.HEIGHT - 125, 50, 50, 2);
+        ship = new Ship(WINDOW_WIDTH/2 - 25, WINDOW_HEIGHT - 125, 50, 50, 2);
         lastValidPoint = new Point(375, 475);
         
         horde = new AlienHorde(30);
@@ -66,18 +75,30 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         //that is the exact same width and height as the current screen
         if(back==null)
            back = (BufferedImage)(createImage(StarFighter.WIDTH, StarFighter.HEIGHT));
+        
+        if(window == null)
+            window = (BufferedImage) (back.getSubimage(WINDOW_DX, WINDOW_DY, WINDOW_WIDTH, WINDOW_HEIGHT));
 
         //create a graphics reference to the back ground image
         //we will draw all changes on the background image
-        Graphics gBack = back.createGraphics();
+        Graphics2D gBack = back.createGraphics();
+        gBack.setColor(Color.WHITE);
+        gBack.fillRect(0, 0, StarFighter.WIDTH, StarFighter.HEIGHT);
+        gBack.setColor(Color.GRAY);
+        gBack.fillRect(WINDOW_DX - 2, WINDOW_DY - 2, WINDOW_WIDTH + 4, WINDOW_HEIGHT + 4);
+        
+        Number.draw(score, 25, 15, gBack);
+        
+        Graphics gWindow = window.createGraphics();
         
         Point mouse = getMousePosition();
-        if(mouse != null) lastValidPoint = mouse;
-
-        gBack.setColor(Color.BLUE);
-        gBack.drawString("StarFighter ", 25, 50 );
-        gBack.setColor(Color.BLACK);
-        gBack.fillRect(0,0,StarFighter.WIDTH,StarFighter.HEIGHT);
+        if(mouse != null) {
+            mouse.translate(-WINDOW_DX, -WINDOW_DY);
+            lastValidPoint = mouse;
+        }
+        
+        gWindow.setColor(Color.BLACK);
+        gWindow.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         
         ship.moveTo(lastValidPoint);
         if(shooting) {
@@ -91,6 +112,7 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         
         shipShots.moveEmAll();
         horde.removeDeadOnes(shipShots.getList());
+        score += horde.getNumNewlyDead();
         powerUps.addAll(horde.getDrops());
         horde.moveEmAll();
         powerUps.moveAll();
@@ -102,18 +124,38 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         ship.checkForBulletDeath(alienShots.getList());
         ship.checkForPowerUps(powerUps.getList());
         // ship.drawBounds(gBack);
+        
+        if(!foughtBoss && horde.allDead() && !ship.isDead()) {
+            foughtBoss = true;
+            horde = new AlienHorde(0);
+            int hordeSize = 50;
+            int distance = (WINDOW_WIDTH - 50) / hordeSize;
+            Alien.Path ap = new Alien.Path(AlienHorde.destinations1);
+            for(int i = 0; i < hordeSize; i++) {
+                Alien a = new Alien(i * distance, 25, 50, 50, 2);
+                a.setPath(ap);
+                horde.add(a);
+            }
+        }
 
         //add in collision detection to see if Bullets hit the Aliens and if Bullets hit the Ship
         ship.upCnt();
         horde.upCnt();
         
-        ship.draw(gBack);
-        horde.drawEmAll(gBack);
-        powerUps.drawAll(gBack);
-        shipShots.drawEmAll(gBack);
-        alienShots.drawEmAll(gBack);
-
+        ship.draw(gWindow);
+        horde.drawEmAll(gWindow);
+        powerUps.drawAll(gWindow);
+        shipShots.drawEmAll(gWindow);
+        alienShots.drawEmAll(gWindow);
+        
+        
         g2D.drawImage(back, null, 0, 0);
+    }
+    
+    public static boolean inWindow(Point p) {
+        Point _p = new Point(p);
+        _p.translate(WINDOW_DX, WINDOW_DY);
+        return _p.x >= WINDOW_DX && _p.x <= WINDOW_DX + WINDOW_WIDTH && _p.y >= WINDOW_DY && _p.y <= WINDOW_DY + WINDOW_HEIGHT;
     }
 
     @Override
@@ -149,5 +191,67 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
 
     @Override
     public void mouseExited(MouseEvent e) { }
+    
+    enum Number {
+        ZERO("images/0.jpg"), ONE("images/1.jpg"), TWO("images/2.jpg"), 
+        THREE("images/3.jpg"), FOUR("images/4.jpg"), FIVE("images/5.jpg"), 
+        SIX("images/6.jpg"), SEVEN("images/7.jpg"), EIGHT("images/8.jpg"), 
+        NINE("images/9.jpg");
+        
+        private BufferedImage image;
+        
+        private Number(String location) {
+            try {
+                image = ImageIO.read(new File(location));
+            } catch (IOException ex) {
+                image = null;
+                System.out.println("Cannot find file");
+            }
+        }
+        
+        public static Number fromInt(int i) {
+            switch(i) {
+                case 0:
+                    return ZERO;
+                case 1:
+                    return ONE;
+                case 2:
+                    return TWO;
+                case 3:
+                    return THREE;
+                case 4:
+                    return FOUR;
+                case 5:
+                    return FIVE;
+                case 6:
+                    return SIX;
+                case 7:
+                    return SEVEN;
+                case 8:
+                    return EIGHT;
+                case 9:
+                    return NINE;
+            }
+            return null;
+        }
+        
+        public void draw(int x, int y, Graphics2D g2D) {
+            g2D.drawImage(image, null, x, y);
+        }
+        
+        public static void draw(int i, int x, int y, Graphics2D g2d) {
+            if(i == 0) {
+                ZERO.draw(x, y, g2d);
+                return;
+            }
+            x += 40 * (String.valueOf(i).length() - 1);
+            while(i > 0){
+                int digit = i % 10;
+                Number n = fromInt(digit);
+                n.draw(x, y, g2d);
+                i /= 10;
+                x -= 40;
+            }
+        }
+    }
 }
-

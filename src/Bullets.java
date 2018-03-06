@@ -39,7 +39,7 @@ public class Bullets {
     public void cleanEmUp() {
         for(int i = ammo.size()-1;i>=0;i--) {
             Ammo a = ammo.get(i);
-            if(a.getY() <= -a.getHeight() || a.getY() >= StarFighter.HEIGHT + a.getHeight()) {
+            if(a.getY() <= -a.getHeight() || a.getY() >= OuterSpace.WINDOW_HEIGHT + a.getHeight()) {
                 ammo.remove(i);
             }
         }

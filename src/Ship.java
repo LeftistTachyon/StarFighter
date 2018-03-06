@@ -17,7 +17,18 @@ public class Ship extends MovingThing {
     private boolean dead = false;
     private int multishot = -1, ultrashot = -1;
     protected int speed;
-    private Image image, explosion;
+    private static Image image, explosion;
+    
+    static {
+        try {
+            File f = new File("images/ship.jpg");
+            image = StarFighter.filter(ImageIO.read( f ));
+            f = new File("images/explosion.gif");
+            explosion = ImageIO.read(f);
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
 
     public Ship() {
         this(10,10,10,10,10);
@@ -36,14 +47,6 @@ public class Ship extends MovingThing {
     public Ship( int x, int y, int w, int h, int s ) {
         super( x, y, w, h );
         speed = s;
-        try {
-            File f = new File("images/ship.jpg");
-            image = ImageIO.read( f );
-            f = new File("images/explosion.gif");
-            explosion = ImageIO.read(f);
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -77,14 +80,14 @@ public class Ship extends MovingThing {
                 break;
         }
         if(xPos < 0) xPos = 0;
-        if(xPos > StarFighter.WIDTH - width) xPos = StarFighter.WIDTH - width;
+        if(xPos > OuterSpace.WINDOW_WIDTH - width) xPos = OuterSpace.WINDOW_WIDTH - width;
         if(yPos < 0) yPos = 0;
-        if(yPos > StarFighter.HEIGHT - width) yPos = StarFighter.HEIGHT - height;
+        if(yPos > OuterSpace.WINDOW_HEIGHT - width) yPos = OuterSpace.WINDOW_HEIGHT - height;
         resetHitBox();
     }
     
     public void moveTo(Point p) {
-        if(dead) return;
+        if(dead || !OuterSpace.inWindow(p)) return;
         xPos = p.x - width/2;
         yPos = p.y;
         resetHitBox();

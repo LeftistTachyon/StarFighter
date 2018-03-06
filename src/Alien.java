@@ -14,8 +14,17 @@ import javax.imageio.ImageIO;
 
 public class Alien extends MovingThing {
     private int speed;
-    private Image image;
+    private static Image image;
     private Path p;
+    
+    static {
+        try {
+            File f = new File("images/alien.jpg");
+            image = StarFighter.filter(ImageIO.read( f ));
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
 
     public Alien() {
         this(0,0,30,30,0);
@@ -35,12 +44,6 @@ public class Alien extends MovingThing {
         super(x, y, w,h);
         p = new Path(new Point(x, y));
         speed = s;
-        try {
-            File f = new File("images/alien.jpg");
-            image = ImageIO.read( f );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
     }
 
     @Override

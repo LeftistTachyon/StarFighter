@@ -26,7 +26,7 @@ public class PowerUps {
     public void cleanUp() {
         for(int i = powerUps.size()-1; i >= 0; i--) {
             PowerUp current = powerUps.get(i);
-            if(current.getX() > StarFighter.HEIGHT + current.getHeight()) {
+            if(current.getX() > OuterSpace.WINDOW_HEIGHT + current.getHeight()) {
                 powerUps.remove(i);
             }
         }
