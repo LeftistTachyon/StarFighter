@@ -82,11 +82,15 @@ public class Alien extends MovingThing {
         if(p.atCurrent(xPos, yPos)) {
             return;
         }
+        moveTo(p.current());
+    }
+    
+    public void moveTo(Point p) {
         Point here = new Point(xPos, yPos);
-        double wey = (speed)/here.distance(p.current());
+        double wey = (speed)/here.distance(p);
         if(wey > 1) wey = 1;
-        int xDiff = (int) Math.round(wey * (p.current().x - here.x)), 
-                yDiff = (int) Math.round(wey * (p.current().y - here.y));
+        int xDiff = (int) Math.round(wey * (p.x - here.x)), 
+                yDiff = (int) Math.round(wey * (p.y - here.y));
         xPos += xDiff;
         yPos += yDiff;
         resetHitBox();

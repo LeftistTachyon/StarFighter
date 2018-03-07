@@ -19,17 +19,19 @@ import javax.imageio.ImageIO;
 
 public class OuterSpace extends Canvas implements MouseListener, Runnable {
     public static final int WINDOW_WIDTH = StarFighter.WIDTH - 50, 
-            WINDOW_HEIGHT = StarFighter.HEIGHT - 100, WINDOW_DX = 25, 
+            WINDOW_HEIGHT = StarFighter.HEIGHT - 125, WINDOW_DX = 25, 
             WINDOW_DY = 75;
     
-    private static BufferedImage scoreImage;
+    private static BufferedImage scoreImage, heart;
     
     static {
         try {
             scoreImage = ImageIO.read(new File("images/score.jpg"));
+            heart = ImageIO.read(new File("images/heart.png"));
         } catch (IOException ex) {
             scoreImage = null;
-            System.out.println("Cannot find image score.jpg");
+            heart = null;
+            System.out.println("Cannot find image");
         }
     }
     
@@ -103,6 +105,10 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         gBack.drawImage(scoreImage, null, 25, 15);
         Number.draw(score, 240, 15, gBack);
         
+        for(int i = 0; i < ship.getLives(); i++) {
+             gBack.drawImage(heart, WINDOW_WIDTH - 25 - (i * 50), 15, null);
+        }
+        
         Graphics gWindow = window.createGraphics();
         
         Point mouse = getMousePosition();
@@ -165,6 +171,10 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
                 Alien a = new Alien(25, 25, 50, 50, 2);
                 a.setPath(new Alien.Path(AlienHorde.destinationsInfinite));
                 horde.add(a);
+            }
+            Point temp = new Point(ship.xPos, ship.yPos);
+            for(Alien alien : horde.getAliens()) {
+                alien.moveTo(temp);
             }
         }
 

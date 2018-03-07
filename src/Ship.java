@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 public class Ship extends MovingThing {
     private static int cntr = 0;
     private boolean dead = false;
-    private int multishot = -1, ultrashot = -1;
+    private int multishot = -1, ultrashot = -1, lives = 3;
     protected int speed;
     private static Image image, explosion;
     
@@ -118,7 +118,8 @@ public class Ship extends MovingThing {
         for(int i = 0;i<aliens.size();i++) {
             if(intersects(aliens.get(i))) {
                 aliens.remove(i);
-                dead = true;
+                lives--;
+                if(lives == 0) dead = true;
                 cntr = 0;
                 return;
             }
@@ -130,7 +131,8 @@ public class Ship extends MovingThing {
         for(int i = 0;i<bullets.size();i++) {
             if(intersects(bullets.get(i))) {
                 bullets.remove(i);
-                dead = true;
+                lives--;
+                if(lives == 0) dead = true;
                 cntr = 0;
                 return;
             }
@@ -180,5 +182,9 @@ public class Ship extends MovingThing {
 
     public boolean isDead() {
         return dead;
+    }
+
+    public int getLives() {
+        return lives;
     }
 }
