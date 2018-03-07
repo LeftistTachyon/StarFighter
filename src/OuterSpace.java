@@ -19,7 +19,7 @@ import javax.imageio.ImageIO;
 
 public class OuterSpace extends Canvas implements MouseListener, Runnable {
     public static final int WINDOW_WIDTH = StarFighter.WIDTH - 50, 
-            WINDOW_HEIGHT = StarFighter.HEIGHT - 125, WINDOW_DX = 25, 
+            WINDOW_HEIGHT = StarFighter.HEIGHT - 175, WINDOW_DX = 25, 
             WINDOW_DY = 75;
     
     private static BufferedImage scoreImage, heart;
@@ -43,7 +43,7 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
     
     private PowerUps powerUps;
     
-    private boolean shooting, foughtBoss = false, beatBoss = false;
+    private boolean shooting, foughtBoss, beatBoss;
     
     private BufferedImage back, window;
     
@@ -69,6 +69,9 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         powerUps = new PowerUps();
         
         alienShots = new Bullets();
+        
+        foughtBoss = false;
+        beatBoss = false;
 
         addMouseListener(this);
         new Thread(this).start();
@@ -108,6 +111,11 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         for(int i = 0; i < ship.getLives(); i++) {
              gBack.drawImage(heart, WINDOW_WIDTH - 25 - (i * 50), 15, null);
         }
+        
+        gBack.setColor(Color.red);
+        gBack.fillRect(25, StarFighter.HEIGHT - 90, 100, 55);
+        gBack.setColor(Color.WHITE);
+        gBack.drawString("Reset", 30, StarFighter.HEIGHT - 75);
         
         Graphics gWindow = window.createGraphics();
         
@@ -197,6 +205,10 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         _p.translate(WINDOW_DX, WINDOW_DY);
         return _p.x >= WINDOW_DX && _p.x <= WINDOW_DX + WINDOW_WIDTH && _p.y >= WINDOW_DY && _p.y <= WINDOW_DY + WINDOW_HEIGHT;
     }
+    
+    public static BufferedImage getHeart() {
+        return heart;
+    }
 
     @Override
     public void run() {
@@ -214,6 +226,26 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         ArrayList<Ammo> shot = ship.shoot();
         if(shot != null && !shot.isEmpty()) 
             shipShots.addAll(shot);
+        if(e.getX() >= 25 && e.getX() <= 125 && e.getY() >= StarFighter.HEIGHT - 90 && e.getY() <= StarFighter.HEIGHT) {
+            setBackground(Color.black);
+
+            //instantiate other instance variables
+            //Ship, Alien
+            ship = new Ship(WINDOW_WIDTH/2 - 25, WINDOW_HEIGHT - 125, 50, 50, 2);
+            lastValidPoint = new Point(375, 475);
+
+            horde = new AlienHorde(30);
+            horde.setShip(ship);
+
+            shipShots = new Bullets();
+
+            powerUps = new PowerUps();
+
+            alienShots = new Bullets();
+
+            foughtBoss = false;
+            beatBoss = false;
+        }
     }
 
     @Override

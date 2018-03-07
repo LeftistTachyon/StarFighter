@@ -52,6 +52,11 @@ public class PowerUp extends MovingThing {
                 window.setColor(Color.YELLOW);
                 window.fillOval(xPos + width/4, yPos + height/4, width/2, height/2);
                 break;
+            case HEART:
+                window.setColor(Color.WHITE);
+                window.fillOval(xPos, yPos, width, height);
+                window.drawImage(OuterSpace.getHeart(), xPos + width/8, yPos + height/8, width*3/4, height*3/4, null);
+                break;
             case NULL:
             default:
                 break;
@@ -69,7 +74,7 @@ public class PowerUp extends MovingThing {
     }
     
     public enum Type {
-        MULTISHOT(1.0), ULTRASHOT(0.1), NULL(0.0);
+        MULTISHOT(1.0), ULTRASHOT(0.1), HEART(0.2), NULL(0.0);
         
         private final double weight;
         

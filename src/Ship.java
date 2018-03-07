@@ -14,8 +14,8 @@ import javax.imageio.ImageIO;
 
 public class Ship extends MovingThing {
     private static int cntr = 0;
-    private boolean dead = false;
-    private int multishot = -1, ultrashot = -1, lives = 3;
+    private boolean dead;
+    private int multishot, ultrashot, lives;
     protected int speed;
     private static Image image, explosion;
     
@@ -46,6 +46,10 @@ public class Ship extends MovingThing {
 
     public Ship( int x, int y, int w, int h, int s ) {
         super( x, y, w, h );
+        multishot = -1; 
+        ultrashot = -1; 
+        lives = 3;
+        dead = false;
         speed = s;
     }
 
@@ -176,6 +180,9 @@ public class Ship extends MovingThing {
                 break;
             case ULTRASHOT:
                 ultrashot = 250;
+                break;
+            case HEART:
+                lives++;
                 break;
         }
     }
