@@ -27,7 +27,7 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
     
     private static BufferedImage scoreImage, heart;
     
-    private static GradientPaint gp;
+    private static GradientPaint ry, bg;
     
     static {
         try {
@@ -38,7 +38,8 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
             heart = null;
             System.out.println("Cannot find image");
         }
-        gp = new GradientPaint(StarFighter.WIDTH - 75, 0, Color.RED, StarFighter.WIDTH - 25, 0, Color.YELLOW);
+        ry = new GradientPaint(StarFighter.WIDTH - 75, 0, Color.RED, StarFighter.WIDTH - 25, 0, Color.YELLOW);
+        bg = new GradientPaint(StarFighter.WIDTH - 150, 0, Color.BLUE, StarFighter.WIDTH - 100, 0, Color.GREEN);
     }
     
     private Ship ship;
@@ -128,8 +129,8 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         gBack.drawString("Reset", 30, StarFighter.HEIGHT - 55);
         
         if(!ship.isDead()) {
-            gBack.setPaint(gp);
-            gBack.fillRect(StarFighter.WIDTH - 25 - Ship.getCntr(), StarFighter.HEIGHT - 90, Ship.getCntr(), 30);
+            gBack.setPaint(ry);
+            gBack.fillRect(StarFighter.WIDTH - 25 - Ship.getCntr1(), StarFighter.HEIGHT - 90, Ship.getCntr1(), 30);
         }
         gBack.setColor(Color.BLACK);
         gBack.setFont(new Font("Consolas", Font.PLAIN, 20));
@@ -202,11 +203,10 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         
         if(beatBoss) {
             cntr++;
-            int releaseAt = 5000 / score;
+            int releaseAt = 10000 / score;
             if(cntr >= releaseAt) {
                 cntr = 0;
-                Alien a = new Alien((int) ((Math.random())*(WINDOW_WIDTH - 50)) - 25, 25, 50, 50, 2);
-                a.setPath(new Alien.Path(AlienHorde.destinationsInfinite));
+                Alien a = new Alien((int) ((Math.random())*(WINDOW_WIDTH - 50)) - 25, 25, 50, 50, 1);
                 horde.add(a);
             }
         }

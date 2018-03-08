@@ -28,6 +28,7 @@ public class PowerUps {
             PowerUp current = powerUps.get(i);
             if(current.getX() > OuterSpace.WINDOW_HEIGHT + current.getHeight()) {
                 powerUps.remove(i);
+                System.out.println("REMOVE");
             }
         }
     }

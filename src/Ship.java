@@ -13,7 +13,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 public class Ship extends MovingThing {
-    private static int cntr = 0;
+    private static int cntr1 = 0, cntr2 = 0;
     private boolean dead;
     private int multishot, ultrashot, lives;
     protected int speed;
@@ -98,10 +98,10 @@ public class Ship extends MovingThing {
     }
     
     public ArrayList<Ammo> shoot() {
-        if(cntr < 50 || dead) {
+        if(cntr1 < 50 || dead) {
             return null;
         } else {
-            cntr = 0;
+            cntr1 = 0;
             ArrayList<Ammo> output = new ArrayList<>();
             int middleX = xPos + (width / 2);
             output.add(new Ammo(middleX, yPos, 3, true));
@@ -117,6 +117,12 @@ public class Ship extends MovingThing {
         }
     }
     
+    public void roll() {
+        if(cntr2 >= 500 && !dead) {
+            cntr2 = 0;
+        }
+    }
+    
     public void checkForAlienDeath(List<Alien> aliens) {
         if(dead) return;
         for(int i = 0;i<aliens.size();i++) {
@@ -124,7 +130,7 @@ public class Ship extends MovingThing {
                 aliens.remove(i);
                 lives--;
                 if(lives == 0) dead = true;
-                cntr = 0;
+                cntr1 = 0;
                 return;
             }
         }
@@ -137,7 +143,7 @@ public class Ship extends MovingThing {
                 bullets.remove(i);
                 lives--;
                 if(lives == 0) dead = true;
-                cntr = 0;
+                cntr1 = 0;
                 return;
             }
         }
@@ -148,6 +154,7 @@ public class Ship extends MovingThing {
         for(int i = powerUps.size() - 1; i >= 0; i--) {
             if(intersects(powerUps.get(i))) {
                 PowerUp pu = powerUps.remove(i);
+                System.out.println("\tREMOVE");
                 powerUp(pu.getType());
             }
         }
@@ -156,8 +163,8 @@ public class Ship extends MovingThing {
     @Override
     public void draw( Graphics window ) {
         if(!dead) window.drawImage(image, xPos, yPos, width, height, null); 
-        else if(cntr != 100)
-            window.drawImage(explosion, xPos - cntr, yPos - cntr, width + 2*cntr, height + 2*cntr, null);
+        else if(cntr1 != 100)
+            window.drawImage(explosion, xPos - cntr1, yPos - cntr1, width + 2*cntr1, height + 2*cntr1, null);
     }
 
     @Override
@@ -167,8 +174,11 @@ public class Ship extends MovingThing {
     
     public void upCnt() {
         if(dead) {
-            if(cntr < 100) cntr++;
-        } else if(cntr < 50) cntr++;
+            if(cntr1 < 100) cntr1++;
+        } else {
+            if(cntr1 < 50) cntr1++;
+            if(cntr2 < 500) cntr2++;
+        }
         if(multishot >= 0) multishot--;
         if(ultrashot >= 0) ultrashot--;
     }
@@ -195,7 +205,11 @@ public class Ship extends MovingThing {
         return lives;
     }
 
-    public static int getCntr() {
-        return cntr;
+    public static int getCntr1() {
+        return cntr1;
+    }
+
+    public static int getCntr2() {
+        return cntr2;
     }
 }
