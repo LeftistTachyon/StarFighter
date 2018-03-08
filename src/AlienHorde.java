@@ -93,6 +93,13 @@ public class AlienHorde {
         }
     }
     
+    public void moveAllToShip() {
+        if(ship == null) return;
+        for(Alien alien : aliens) {
+            alien.moveTo(new Point(ship.xPos, ship.yPos));
+        }
+    }
+    
     public int getNumNewlyDead() {
         return newlyDead.size();
     }

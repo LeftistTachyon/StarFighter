@@ -8,7 +8,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Canvas;
+import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -24,6 +27,8 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
     
     private static BufferedImage scoreImage, heart;
     
+    private static GradientPaint gp;
+    
     static {
         try {
             scoreImage = ImageIO.read(new File("images/score.jpg"));
@@ -33,6 +38,7 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
             heart = null;
             System.out.println("Cannot find image");
         }
+        gp = new GradientPaint(StarFighter.WIDTH - 75, 0, Color.RED, StarFighter.WIDTH - 25, 0, Color.YELLOW);
     }
     
     private Ship ship;
@@ -100,10 +106,13 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         //create a graphics reference to the back ground image
         //we will draw all changes on the background image
         Graphics2D gBack = back.createGraphics();
+        gBack.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        gBack.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
         gBack.setColor(Color.WHITE);
         gBack.fillRect(0, 0, StarFighter.WIDTH, StarFighter.HEIGHT);
         gBack.setColor(Color.GRAY);
-        gBack.fillRect(WINDOW_DX - 2, WINDOW_DY - 2, WINDOW_WIDTH + 4, WINDOW_HEIGHT + 4);
+        gBack.fillRoundRect(WINDOW_DX - 2, WINDOW_DY - 2, WINDOW_WIDTH + 4, WINDOW_HEIGHT + 4, 17, 17);
         
         gBack.drawImage(scoreImage, null, 25, 15);
         Number.draw(score, 240, 15, gBack);
@@ -113,11 +122,29 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         }
         
         gBack.setColor(Color.red);
-        gBack.fillRect(25, StarFighter.HEIGHT - 90, 100, 55);
+        gBack.fillRoundRect(25, StarFighter.HEIGHT - 90, 100, 55, 15, 15);
         gBack.setColor(Color.WHITE);
-        gBack.drawString("Reset", 30, StarFighter.HEIGHT - 75);
+        gBack.setFont(new Font("Consolas", Font.PLAIN, 30));
+        gBack.drawString("Reset", 30, StarFighter.HEIGHT - 55);
         
-        Graphics gWindow = window.createGraphics();
+        if(!ship.isDead()) {
+            gBack.setPaint(gp);
+            gBack.fillRect(StarFighter.WIDTH - 25 - Ship.getCntr(), StarFighter.HEIGHT - 90, Ship.getCntr(), 30);
+        }
+        gBack.setColor(Color.BLACK);
+        gBack.setFont(new Font("Consolas", Font.PLAIN, 20));
+        gBack.drawString("Reload", StarFighter.WIDTH - 90, StarFighter.HEIGHT - 40);
+        
+        if(score >= 150) {
+            gBack.drawImage(heart, 433, StarFighter.HEIGHT - 95, 65, 65, null);
+            gBack.setFont(new Font("Consolas", Font.BOLD, 55));
+            gBack.setColor(Color.BLACK);
+            gBack.drawString("L E G E N D", 450, StarFighter.HEIGHT - 45);
+        }
+        
+        Graphics2D gWindow = window.createGraphics();
+        gWindow.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        gWindow.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
         Point mouse = getMousePosition();
         if(mouse != null) {
@@ -126,7 +153,7 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         }
         
         gWindow.setColor(Color.BLACK);
-        gWindow.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        gWindow.fillRoundRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 15, 15);
         
         ship.moveTo(lastValidPoint);
         if(shooting) {
@@ -142,7 +169,8 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         horde.removeDeadOnes(shipShots.getList());
         score += horde.getNumNewlyDead();
         powerUps.addAll(horde.getDrops());
-        horde.moveEmAll();
+        if(beatBoss) horde.moveAllToShip();
+        else horde.moveEmAll();
         powerUps.moveAll();
         alienShots.moveEmAll();
         alienShots.addAll(horde.shootAll());
@@ -168,21 +196,18 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
             } else if(!beatBoss) {
                 beatBoss = true;
                 horde = new AlienHorde(0);
+                horde.setShip(ship);
             }
         }
         
         if(beatBoss) {
             cntr++;
-            int releaseAt = 10000 / score;
+            int releaseAt = 5000 / score;
             if(cntr >= releaseAt) {
                 cntr = 0;
-                Alien a = new Alien(25, 25, 50, 50, 2);
+                Alien a = new Alien((int) ((Math.random())*(WINDOW_WIDTH - 50)) - 25, 25, 50, 50, 2);
                 a.setPath(new Alien.Path(AlienHorde.destinationsInfinite));
                 horde.add(a);
-            }
-            Point temp = new Point(ship.xPos, ship.yPos);
-            for(Alien alien : horde.getAliens()) {
-                alien.moveTo(temp);
             }
         }
 
@@ -245,6 +270,8 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
 
             foughtBoss = false;
             beatBoss = false;
+            
+            score = 0;
         }
     }
 

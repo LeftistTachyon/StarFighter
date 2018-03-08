@@ -55,7 +55,7 @@ public class PowerUp extends MovingThing {
             case HEART:
                 window.setColor(Color.WHITE);
                 window.fillOval(xPos, yPos, width, height);
-                window.drawImage(OuterSpace.getHeart(), xPos + width/8, yPos + height/8, width*3/4, height*3/4, null);
+                window.drawImage(OuterSpace.getHeart(), xPos + width/4, yPos + height/4, width/2, height/2, null);
                 break;
             case NULL:
             default:

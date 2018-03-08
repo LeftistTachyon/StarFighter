@@ -98,7 +98,7 @@ public class Ship extends MovingThing {
     }
     
     public ArrayList<Ammo> shoot() {
-        if(cntr != 50 || dead) {
+        if(cntr < 50 || dead) {
             return null;
         } else {
             cntr = 0;
@@ -193,5 +193,9 @@ public class Ship extends MovingThing {
 
     public int getLives() {
         return lives;
+    }
+
+    public static int getCntr() {
+        return cntr;
     }
 }
