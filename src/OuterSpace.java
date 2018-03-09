@@ -131,10 +131,13 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         if(!ship.isDead()) {
             gBack.setPaint(ry);
             gBack.fillRect(StarFighter.WIDTH - 25 - Ship.getCntr1(), StarFighter.HEIGHT - 90, Ship.getCntr1(), 30);
+            gBack.setPaint(bg);
+            gBack.fillRect(StarFighter.WIDTH - 100 - (Ship.getCntr2()/10), StarFighter.HEIGHT - 90, (Ship.getCntr2()/10), 30);
         }
         gBack.setColor(Color.BLACK);
         gBack.setFont(new Font("Consolas", Font.PLAIN, 20));
         gBack.drawString("Reload", StarFighter.WIDTH - 90, StarFighter.HEIGHT - 40);
+        gBack.drawString("Roll", StarFighter.WIDTH - 150, StarFighter.HEIGHT - 40);
         
         if(score >= 150) {
             gBack.drawImage(heart, 433, StarFighter.HEIGHT - 95, 65, 65, null);
@@ -254,6 +257,9 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
                 if(shot != null && !shot.isEmpty()) 
                     shipShots.addAll(shot);
                 break;
+            case MouseEvent.BUTTON2:
+                System.out.println("MIDDLE");
+                break;
             case MouseEvent.BUTTON3: // RIGHT
                 ship.roll();
                 break;
@@ -287,12 +293,12 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        shooting = true;
+        if(e.getButton() == MouseEvent.BUTTON1) shooting = true;
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        shooting = false;
+        if(e.getButton() == MouseEvent.BUTTON1) shooting = false;
     }
 
     @Override

@@ -4,10 +4,13 @@
 //Class - 
 //Lab  -
 
+import java.awt.Color;
 import java.io.File;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.RadialGradientPaint;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,7 @@ import javax.imageio.ImageIO;
 
 public class Ship extends MovingThing {
     private static int cntr1 = 0, cntr2 = 60;
-    private boolean dead;
+    private boolean dead, shielded;
     private int multishot, ultrashot, lives, roll;
     protected int speed;
     private static Image top, bottom, sideL, sideR, explosion;
@@ -59,6 +62,8 @@ public class Ship extends MovingThing {
         dead = false;
         roll = 0;
         speed = s;
+        shielded = false;
+        if(cntr1 > 50) cntr1 = 50;
     }
 
 
@@ -140,8 +145,12 @@ public class Ship extends MovingThing {
         for(int i = 0;i<aliens.size();i++) {
             if(intersects(aliens.get(i))) {
                 aliens.remove(i);
-                lives--;
-                if(lives == 0) dead = true;
+                if(shielded) {
+                    shielded = false;
+                } else {
+                    lives--;
+                    if(lives == 0) dead = true;
+                }
                 cntr1 = 0;
                 return;
             }
@@ -153,8 +162,12 @@ public class Ship extends MovingThing {
         for(int i = 0;i<bullets.size();i++) {
             if(intersects(bullets.get(i))) {
                 bullets.remove(i);
-                lives--;
-                if(lives == 0) dead = true;
+                if(shielded) {
+                    shielded = false;
+                } else {
+                    lives--;
+                    if(lives == 0) dead = true;
+                }
                 cntr1 = 0;
                 return;
             }
@@ -166,7 +179,6 @@ public class Ship extends MovingThing {
         for(int i = powerUps.size() - 1; i >= 0; i--) {
             if(intersects(powerUps.get(i))) {
                 PowerUp pu = powerUps.remove(i);
-                System.out.println("\tREMOVE");
                 powerUp(pu.getType());
             }
         }
@@ -175,6 +187,14 @@ public class Ship extends MovingThing {
     @Override
     public void draw( Graphics window ) {
         if(!dead) {
+            if(shielded) {
+                Graphics2D g2D = (Graphics2D) window;
+                RadialGradientPaint aura = new RadialGradientPaint(
+                        xPos + width/2, yPos + height/2, width + height, 
+                        new float[]{0.0f, 1.0f}, new Color[]{Color.BLACK, Color.WHITE}
+                );
+                g2D.fillOval(xPos - width/2, yPos - height/2, width*2, height*2);
+            }
             if(roll == 2 || roll == 0)  {
                 window.drawImage(top, xPos, yPos, width, height, null); 
             } else if(cntr2 < 20) {
@@ -225,6 +245,9 @@ public class Ship extends MovingThing {
                 break;
             case HEART:
                 lives++;
+                break;
+            case SHIELD:
+                shielded = true;
                 break;
         }
     }

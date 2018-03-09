@@ -94,25 +94,21 @@ public class AlienHorde {
     }
 
     public void removeDeadOnes(List<Ammo> shots) {
-        try {
-            for (int i = 0; i < aliens.size(); i++) {
-                for (int j = shots.size() - 1; j >= 0; j--) {
-                    if(aliens.isEmpty()) {
-                        return;
-                    }
-                    while(aliens.get(i)
-                            .intersects(shots.get(j)) && shots.get(j).fromShip) {
-                        newlyDead.add(aliens.remove(i));
-                        if(aliens.isEmpty()) return;
-                        if(i == aliens.size()) i--;
-                        shots.remove(j);
-                        if(shots.isEmpty()) return;
-                        if(j == shots.size()) j--;
-                    }
+        for (int i = 0; i < aliens.size(); i++) {
+            for (int j = shots.size() - 1; j >= 0; j--) {
+                if(aliens.isEmpty()) {
+                    return;
+                }
+                while(aliens.get(i)
+                        .intersects(shots.get(j)) && shots.get(j).fromShip) {
+                    newlyDead.add(aliens.remove(i));
+                    if(aliens.isEmpty()) return;
+                    if(i == aliens.size()) i--;
+                    shots.remove(j);
+                    if(shots.isEmpty()) return;
+                    if(j == shots.size()) j--;
                 }
             }
-        } catch (Exception e) {
-            System.out.println("HELP: " + e.toString());
         }
     }
     
