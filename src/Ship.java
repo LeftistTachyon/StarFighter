@@ -8,21 +8,28 @@ import java.io.File;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 
 public class Ship extends MovingThing {
-    private static int cntr1 = 0, cntr2 = 0;
+    private static int cntr1 = 0, cntr2 = 60;
     private boolean dead;
-    private int multishot, ultrashot, lives;
+    private int multishot, ultrashot, lives, roll;
     protected int speed;
-    private static Image image, explosion;
+    private static Image top, bottom, sideL, sideR, explosion;
     
     static {
         try {
-            File f = new File("images/ship.jpg");
-            image = StarFighter.filter(ImageIO.read( f ));
+            File f = new File("images/top.jpg");
+            top = StarFighter.filter(ImageIO.read( f ));
+            f = new File("images/bottom.jpg");
+            bottom = StarFighter.filter(ImageIO.read( f ));
+            f = new File("images/sideR.png");
+            sideR = StarFighter.filter(ImageIO.read( f ));
+            f = new File("images/sideL.png");
+            sideL = StarFighter.filter(ImageIO.read( f ));
             f = new File("images/explosion.gif");
             explosion = ImageIO.read(f);
         } catch ( Exception e ) {
@@ -50,6 +57,7 @@ public class Ship extends MovingThing {
         ultrashot = -1; 
         lives = 3;
         dead = false;
+        roll = 0;
         speed = s;
     }
 
@@ -92,7 +100,10 @@ public class Ship extends MovingThing {
     
     public void moveTo(Point p) {
         if(dead || !OuterSpace.inWindow(p)) return;
-        xPos = p.x - width/2;
+        int newX = p.x - width/2;
+        if(newX - xPos < 0) roll = -1;
+        else roll = 1;
+        xPos = newX;
         yPos = p.y;
         resetHitBox();
     }
@@ -120,6 +131,7 @@ public class Ship extends MovingThing {
     public void roll() {
         if(cntr2 >= 500 && !dead) {
             cntr2 = 0;
+            roll = 2;
         }
     }
     
@@ -162,8 +174,27 @@ public class Ship extends MovingThing {
 
     @Override
     public void draw( Graphics window ) {
-        if(!dead) window.drawImage(image, xPos, yPos, width, height, null); 
-        else if(cntr1 != 100)
+        if(!dead) {
+            if(roll == 2 || roll == 0)  {
+                window.drawImage(top, xPos, yPos, width, height, null); 
+            } else if(cntr2 < 20) {
+                if(roll > 0) {
+                    window.drawImage(sideL, xPos, yPos, width, height, null); 
+                } else {
+                    window.drawImage(sideR, xPos, yPos, width, height, null); 
+                }
+            } else if(cntr2 < 40) {
+                window.drawImage(bottom, xPos, yPos, width, height, null); 
+            } else if(cntr2 < 60) {
+                if(roll > 0) {
+                    window.drawImage(sideR, xPos, yPos, width, height, null); 
+                } else {
+                    window.drawImage(sideL, xPos, yPos, width, height, null); 
+                }
+            } else {
+                window.drawImage(top, xPos, yPos, width, height, null); 
+            }
+        } else if(cntr1 != 100)
             window.drawImage(explosion, xPos - cntr1, yPos - cntr1, width + 2*cntr1, height + 2*cntr1, null);
     }
 
@@ -178,6 +209,7 @@ public class Ship extends MovingThing {
         } else {
             if(cntr1 < 50) cntr1++;
             if(cntr2 < 500) cntr2++;
+            if(cntr2 > 60) roll = 0;
         }
         if(multishot >= 0) multishot--;
         if(ultrashot >= 0) ultrashot--;
@@ -195,6 +227,14 @@ public class Ship extends MovingThing {
                 lives++;
                 break;
         }
+    }
+    
+    @Override
+    protected void resetHitBox() {
+        if(dead) return;
+        if(roll != 0) {
+            shape = new Rectangle2D.Double(xPos, yPos, width*3/20, height);
+        } else shape = new Rectangle2D.Double(xPos, yPos, width, height);
     }
 
     public boolean isDead() {

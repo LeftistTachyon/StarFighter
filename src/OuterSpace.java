@@ -248,9 +248,19 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        ArrayList<Ammo> shot = ship.shoot();
-        if(shot != null && !shot.isEmpty()) 
-            shipShots.addAll(shot);
+        switch (e.getButton()) {
+            case MouseEvent.BUTTON1: // LEFT
+                ArrayList<Ammo> shot = ship.shoot();
+                if(shot != null && !shot.isEmpty()) 
+                    shipShots.addAll(shot);
+                break;
+            case MouseEvent.BUTTON3: // RIGHT
+                ship.roll();
+                break;
+            default:
+                break;
+        }
+        
         if(e.getX() >= 25 && e.getX() <= 125 && e.getY() >= StarFighter.HEIGHT - 90 && e.getY() <= StarFighter.HEIGHT) {
             setBackground(Color.black);
 
