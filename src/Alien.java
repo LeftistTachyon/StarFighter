@@ -97,7 +97,7 @@ public class Alien extends MovingThing {
     }
 
     @Override
-    public void draw( Graphics window ) {
+    public void drawThing( Graphics window ) {
         window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
     }
 

@@ -2,11 +2,24 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class PowerUp extends MovingThing {
     private int speed;
     private Type type;
-    private GeneralPath shield;
+    private static BufferedImage shield;
+    
+    static {
+        try {
+            shield = ImageIO.read(new File("images/shield.png"));
+        } catch (IOException ex) {
+            shield = null;
+            System.out.println("Cannot find shield image");
+        }
+    }
     
     public PowerUp(int x, int y) {
         this(x, y, 0, 0, 0);
@@ -37,7 +50,7 @@ public class PowerUp extends MovingThing {
     }
 
     @Override
-    public void draw(Graphics window) {
+    public void drawThing(Graphics window) {
         Graphics2D g2D = (Graphics2D) window;
         switch(type) {
             case MULTISHOT:
@@ -64,14 +77,7 @@ public class PowerUp extends MovingThing {
             case SHIELD:
                 g2D.setColor(Color.WHITE);
                 g2D.fillOval(xPos, yPos, width, height);
-                g2D.setColor(Color.BLUE);
-                shield = new GeneralPath();
-                shield.moveTo(5 + xPos, yPos);
-                shield.quadTo(10 + xPos, 10 + yPos, 15 + xPos, yPos);
-                shield.quadTo(20 + xPos, 10 + yPos, 25 + xPos, yPos);
-                shield.curveTo(15 + xPos, 30 + yPos, 15 + xPos, 30 + yPos, 5 + xPos, yPos);
-                shield.closePath();
-                g2D.fill(shield);
+                g2D.drawImage(shield, xPos + width/4, yPos + height/4, width/2, height/2, null);
                 break;
             case NULL:
             default:
@@ -88,9 +94,13 @@ public class PowerUp extends MovingThing {
     public int getSpeed() {
         return speed;
     }
+
+    public static BufferedImage getShield() {
+        return shield;
+    }
     
     public enum Type {
-        MULTISHOT(1.0), ULTRASHOT(0.1), HEART(0.2), SHIELD(10000000), NULL(0.0);
+        MULTISHOT(1.0), ULTRASHOT(0.1), HEART(0.2), SHIELD(0.3), NULL(0.0);
         
         private final double weight;
         

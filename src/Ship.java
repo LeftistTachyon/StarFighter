@@ -25,9 +25,9 @@ public class Ship extends MovingThing {
     
     static {
         try {
-            File f = new File("images/top.jpg");
+            File f = new File("images/top.png");
             top = StarFighter.filter(ImageIO.read( f ));
-            f = new File("images/bottom.jpg");
+            f = new File("images/bottom.png");
             bottom = StarFighter.filter(ImageIO.read( f ));
             f = new File("images/sideR.png");
             sideR = StarFighter.filter(ImageIO.read( f ));
@@ -106,8 +106,13 @@ public class Ship extends MovingThing {
     public void moveTo(Point p) {
         if(dead || !OuterSpace.inWindow(p)) return;
         int newX = p.x - width/2;
-        if(newX - xPos < 0) roll = -1;
-        else roll = 1;
+        if(roll == 2) {
+            if (newX - xPos < 0) {
+                roll = -1;
+            } else {
+                roll = 1;
+            }
+        }
         xPos = newX;
         yPos = p.y;
         resetHitBox();
@@ -185,7 +190,7 @@ public class Ship extends MovingThing {
     }
 
     @Override
-    public void draw( Graphics window ) {
+    public void drawThing( Graphics window ) {
         if(!dead) {
             if(shielded) {
                 Graphics2D g2D = (Graphics2D) window;
@@ -193,6 +198,7 @@ public class Ship extends MovingThing {
                         xPos + width/2, yPos + height/2, width + height, 
                         new float[]{0.0f, 1.0f}, new Color[]{Color.BLACK, Color.WHITE}
                 );
+                g2D.setPaint(aura);
                 g2D.fillOval(xPos - width/2, yPos - height/2, width*2, height*2);
             }
             if(roll == 2 || roll == 0)  {
@@ -255,13 +261,19 @@ public class Ship extends MovingThing {
     @Override
     protected void resetHitBox() {
         if(dead) return;
-        if(roll != 0) {
-            shape = new Rectangle2D.Double(xPos, yPos, width*3/20, height);
-        } else shape = new Rectangle2D.Double(xPos, yPos, width, height);
+        if(roll == 0) {
+            shape = new Rectangle2D.Double(xPos, yPos, width, height); 
+        } else {
+            shape = new Rectangle2D.Double(xPos + (width*17/40), yPos, width*3/20, height);
+        }
     }
 
     public boolean isDead() {
         return dead;
+    }
+
+    public boolean isShielded() {
+        return shielded;
     }
 
     public int getLives() {

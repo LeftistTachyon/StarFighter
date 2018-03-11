@@ -38,7 +38,7 @@ public class Ammo extends MovingThing {
     }
 
     @Override
-    public void draw( Graphics g ) {
+    public void drawThing( Graphics g ) {
         //add code to draw the ammo
         if(fromShip) g.setColor(Color.RED);
         else g.setColor(Color.YELLOW);

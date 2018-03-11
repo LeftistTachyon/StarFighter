@@ -9,13 +9,12 @@ import java.awt.Graphics;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 
-public abstract class MovingThing implements Moveable
-{
+public abstract class MovingThing implements Moveable {
     protected int xPos;
     protected int yPos;
     protected int width;
     protected int height;
-    protected boolean drawBounds = false;
+    protected final boolean drawBounds = false;
     protected Rectangle2D shape;
 
     public MovingThing()
@@ -112,5 +111,11 @@ public abstract class MovingThing implements Moveable
     }
 
     public abstract void move(String direction);
-    public abstract void draw(Graphics window);
+    
+    public void draw(Graphics window) {
+        drawThing(window);
+        if(drawBounds) drawBounds(window);
+    }
+    
+    protected abstract void drawThing(Graphics window);
 }

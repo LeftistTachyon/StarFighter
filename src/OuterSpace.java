@@ -118,8 +118,12 @@ public class OuterSpace extends Canvas implements MouseListener, Runnable {
         gBack.drawImage(scoreImage, null, 25, 15);
         Number.draw(score, 240, 15, gBack);
         
-        for(int i = 0; i < ship.getLives(); i++) {
-             gBack.drawImage(heart, WINDOW_WIDTH - 25 - (i * 50), 15, null);
+        int cnt;
+        for(cnt = 0; cnt < ship.getLives(); cnt++) {
+            gBack.drawImage(heart, WINDOW_WIDTH - 25 - (cnt * 50), 15, null);
+        }
+        if(ship.isShielded()) {
+            gBack.drawImage(PowerUp.getShield(), WINDOW_WIDTH - 25 - (cnt*50), 15, null);
         }
         
         gBack.setColor(Color.red);
